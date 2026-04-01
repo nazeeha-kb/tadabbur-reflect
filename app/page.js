@@ -4,6 +4,30 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 
+const steps = [
+  {
+    step: "Step 1",
+    icon: "✏️",
+    title: "Type your emotion",
+    body: "Share what weighs on your heart. The application listens and gently guides you.",
+    tone: "#eaf2f3",
+  },
+  {
+    step: "Step 2",
+    icon: "📖",
+    title: "Read curated ayahs",
+    body: "Receive meaningful Quran verses with translation and brief tafseer.",
+    tone: "#f9f1ea",
+  },
+  {
+    step: "Step 3",
+    icon: "💾",
+    title: "Reflect and write",
+    body: "Capture your thoughts and return to your spiritual journey anytime.",
+    tone: "#eef1ee",
+  },
+];
+
 export default function Home() {
   const [emotion, setEmotion] = useState("");
   const router = useRouter();
@@ -16,77 +40,313 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen">
-      <SiteHeader />
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-20 px-4 pb-16 pt-6 sm:px-6">
-        <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-          <p className="rounded-full bg-[var(--peach-soft)] px-4 py-1 text-xs font-semibold tracking-[0.2em] text-[var(--peach)] uppercase">
-            A Sanctuary For The Soul
-          </p>
-          <h1 className="mt-6 text-5xl leading-none text-[var(--teal)] sm:text-7xl">
-            Find solace in <span className="italic text-[var(--peach)]">His words.</span>
-          </h1>
-          <p className="mt-6 max-w-xl text-base text-slate-600 sm:text-lg">
-            Explore divine guidance tailored to your emotions and life&apos;s present journey.
-          </p>
-
-          <form onSubmit={handleSubmit} className="surface-card mt-10 flex w-full max-w-2xl items-center gap-3 p-2">
-            <label htmlFor="emotion" className="sr-only">
-              Describe how you feel
-            </label>
-            <input
-              id="emotion"
-              name="emotion"
-              value={emotion}
-              onChange={(event) => setEmotion(event.target.value)}
-              placeholder="What is on your heart today?"
-              className="focus-ring h-12 flex-1 rounded-lg border border-transparent bg-transparent px-4 text-sm text-slate-800 placeholder:text-slate-400"
-              required
-            />
-            <button
-              type="submit"
-              className="h-12 rounded-xl bg-[var(--peach)] px-6 text-sm font-semibold text-white transition hover:brightness-105 focus-visible:focus-ring"
+    <div className="win-desktop" style={{ minHeight: "100vh", padding: "12px" }}>
+      {/* Main "window" */}
+      <div
+        className="win-window"
+        style={{
+          maxWidth: 920,
+          margin: "0 auto",
+          background: "#d4d0c8",
+          borderTop: "2px solid #ffffff",
+          borderLeft: "2px solid #ffffff",
+          borderBottom: "2px solid #404040",
+          borderRight: "2px solid #404040",
+        }}
+      >
+        {/* Title bar */}
+        <div className="win-titlebar">
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 16,
+              height: 16,
+              background: "#ffcc00",
+              border: "1px solid #808080",
+              fontWeight: "bold",
+              fontSize: 9,
+              color: "#000080",
+              flexShrink: 0,
+            }}
+          >
+            Q
+          </span>
+          <span style={{ flex: 1 }}>Quran Reflect — Home — Microsoft Internet Explorer</span>
+          {/* Window chrome buttons */}
+          <div style={{ display: "flex", gap: 2, marginLeft: "auto" }}>
+            <span className="win-titlebar-btn">_</span>
+            <span className="win-titlebar-btn">□</span>
+            <span
+              className="win-titlebar-btn"
+              style={{ background: "#cc0000", color: "#fff", fontWeight: "bold" }}
             >
-              Reflect
-            </button>
-          </form>
-        </section>
-
-        <section className="text-center">
-          <h2 className="text-4xl text-[var(--teal)] sm:text-5xl">How it Works</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-slate-500 sm:text-base">
-            A simple three-step journey to find clarity and peace through divine wisdom.
-          </p>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                step: "Step 01",
-                title: "Type your emotion",
-                body: "Share what weighs on your heart. The app listens and gently guides you.",
-                tone: "bg-[#eaf2f3]",
-              },
-              {
-                step: "Step 02",
-                title: "Read curated ayahs",
-                body: "Receive meaningful Quran verses with translation and brief tafseer.",
-                tone: "bg-[#f9f1ea]",
-              },
-              {
-                step: "Step 03",
-                title: "Reflect and write",
-                body: "Capture your thoughts and return to your spiritual journey anytime.",
-                tone: "bg-[#eef1ee]",
-              },
-            ].map((item) => (
-              <article key={item.step} className={`surface-card rounded-3xl p-7 text-left ${item.tone}`}>
-                <p className="text-xs font-semibold tracking-[0.2em] uppercase text-slate-500">{item.step}</p>
-                <h3 className="mt-4 text-3xl text-[var(--teal)]">{item.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.body}</p>
-              </article>
-            ))}
+              ✕
+            </span>
           </div>
-        </section>
-      </main>
+        </div>
+
+        {/* Browser chrome */}
+        <SiteHeader />
+
+        {/* Page content area */}
+        <div
+          style={{
+            background: "#ffffff",
+            borderTop: "2px solid #808080",
+            borderLeft: "2px solid #808080",
+            borderBottom: "2px solid #dfdfdf",
+            borderRight: "2px solid #dfdfdf",
+            margin: "4px",
+            padding: "16px 20px 24px",
+          }}
+        >
+          {/* Hero section */}
+          <section style={{ textAlign: "center", paddingBottom: 20, borderBottom: "1px solid #d0d0d0" }}>
+            {/* Flashing "new" badge replica */}
+            <p
+              style={{
+                display: "inline-block",
+                background: "#000080",
+                color: "#ffff00",
+                fontSize: 10,
+                fontWeight: "bold",
+                letterSpacing: "0.15em",
+                padding: "2px 10px",
+                marginBottom: 10,
+                textTransform: "uppercase",
+                border: "1px solid #ffff00",
+              }}
+            >
+              ★ A Sanctuary For The Soul ★
+            </p>
+
+            <h1
+              style={{
+                fontFamily: "MS Sans Serif, Arial, sans-serif",
+                fontSize: 28,
+                fontWeight: "bold",
+                color: "#000080",
+                margin: "8px 0",
+                lineHeight: 1.2,
+              }}
+            >
+              Find solace in{" "}
+              <span style={{ color: "#c05800" }}>
+                His words.
+              </span>
+            </h1>
+            <p
+              style={{
+                fontSize: 12,
+                color: "#444",
+                maxWidth: 480,
+                margin: "6px auto 16px",
+                lineHeight: 1.6,
+              }}
+            >
+              Explore divine guidance tailored to your emotions and life&apos;s present journey.
+            </p>
+
+            {/* Emotion input — styled as a dialog */}
+            <div
+              style={{
+                display: "inline-block",
+                width: "100%",
+                maxWidth: 560,
+                textAlign: "left",
+              }}
+            >
+              {/* Dialog title bar */}
+              <div
+                className="win-titlebar"
+                style={{ borderRadius: 0, fontSize: 11, padding: "2px 6px" }}
+              >
+                <span
+                  style={{
+                    display: "inline-flex",
+                    width: 14,
+                    height: 14,
+                    background: "#fff",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 9,
+                    color: "#000080",
+                    fontWeight: "bold",
+                    flexShrink: 0,
+                    border: "1px solid #808080",
+                  }}
+                >
+                  ?
+                </span>
+                Reflect.exe — Enter Your Emotion
+              </div>
+              <div
+                style={{
+                  background: "#d4d0c8",
+                  borderTop: "none",
+                  borderLeft: "2px solid #dfdfdf",
+                  borderRight: "2px solid #808080",
+                  borderBottom: "2px solid #808080",
+                  padding: "12px 14px 14px",
+                }}
+              >
+                <p style={{ fontSize: 11, marginBottom: 8, color: "#000" }}>
+                  What is on your heart today?
+                </p>
+                <form onSubmit={handleSubmit} style={{ display: "flex", gap: 6 }}>
+                  <label htmlFor="emotion" className="sr-only">
+                    Describe how you feel
+                  </label>
+                  <input
+                    id="emotion"
+                    name="emotion"
+                    value={emotion}
+                    onChange={(e) => setEmotion(e.target.value)}
+                    placeholder="Type here..."
+                    className="win-input"
+                    style={{ flex: 1, height: 28 }}
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="win-btn win-btn-default"
+                    style={{ height: 28, minWidth: 80 }}
+                  >
+                    Reflect
+                  </button>
+                </form>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 6,
+                    marginTop: 8,
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <button type="button" className="win-btn" style={{ height: 24, fontSize: 10 }}>
+                    Cancel
+                  </button>
+                  <button type="button" className="win-btn" style={{ height: 24, fontSize: 10 }}>
+                    Help
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* How it Works section */}
+          <section style={{ marginTop: 20 }}>
+            <h2
+              style={{
+                fontFamily: "MS Sans Serif, Arial, sans-serif",
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#000080",
+                marginBottom: 4,
+              }}
+            >
+              How It Works
+            </h2>
+            <p style={{ fontSize: 11, color: "#444", marginBottom: 14 }}>
+              A simple three-step journey to find clarity and peace through divine wisdom.
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: 10,
+              }}
+            >
+              {steps.map((item) => (
+                <article
+                  key={item.step}
+                  className="win-step-card"
+                  style={{ background: item.tone }}
+                >
+                  {/* Step header */}
+                  <div
+                    style={{
+                      background: "#000080",
+                      color: "#ffffff",
+                      fontSize: 10,
+                      fontWeight: "bold",
+                      padding: "2px 6px",
+                      marginBottom: 8,
+                      letterSpacing: "0.1em",
+                    }}
+                  >
+                    {item.icon} {item.step}
+                  </div>
+                  <h3
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "bold",
+                      color: "#000080",
+                      marginBottom: 6,
+                      fontFamily: "MS Sans Serif, Arial, sans-serif",
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p style={{ fontSize: 11, color: "#333", lineHeight: 1.6 }}>
+                    {item.body}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            {/* Horizontal rule / divider */}
+            <div style={{ marginTop: 20, borderTop: "1px solid #808080", borderBottom: "1px solid #dfdfdf" }} />
+
+            {/* Footer note */}
+            <p
+              style={{
+                marginTop: 10,
+                fontSize: 10,
+                color: "#444",
+                textAlign: "center",
+              }}
+            >
+              © 2000 Quran Reflect Inc. All rights reserved. &nbsp;|&nbsp; Best viewed in 800×600 &nbsp;|&nbsp; Internet Explorer 5.5
+            </p>
+          </section>
+        </div>
+
+        {/* Status bar */}
+        <div className="win-statusbar">
+          <span className="win-statusbar-panel">Done</span>
+          <span
+            style={{
+              fontSize: 10,
+              padding: "0 6px",
+              borderTop: "1px solid #808080",
+              borderLeft: "1px solid #808080",
+              borderBottom: "1px solid #dfdfdf",
+              borderRight: "1px solid #dfdfdf",
+              whiteSpace: "nowrap",
+            }}
+          >
+            ✔ No errors on page
+          </span>
+          <span
+            style={{
+              fontSize: 10,
+              padding: "0 6px",
+              borderTop: "1px solid #808080",
+              borderLeft: "1px solid #808080",
+              borderBottom: "1px solid #dfdfdf",
+              borderRight: "1px solid #dfdfdf",
+              whiteSpace: "nowrap",
+              color: "#000080",
+            }}
+          >
+            🌐 Internet
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

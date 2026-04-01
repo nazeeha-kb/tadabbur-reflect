@@ -1,42 +1,386 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8f7f4;
-  --foreground: #1e293b;
-  --muted: #64748b;
-  --teal: #1f6b71;
-  --teal-soft: #e6f0ef;
-  --peach: #d48d62;
-  --peach-soft: #f8ece5;
-  --card: #ffffff;
-  --border: #d6dde2;
+  --background: #d4d0c8;
+  --foreground: #000000;
+  --muted: #444444;
+
+  /* Windows 2000 classic colors */
+  --win-bg: #d4d0c8;
+  --win-face: #d4d0c8;
+  --win-dark: #808080;
+  --win-darker: #404040;
+  --win-light: #ffffff;
+  --win-border-dark: #808080;
+  --win-border-darker: #404040;
+  --win-border-light: #dfdfdf;
+  --win-border-white: #ffffff;
+  --win-title-from: #000080;
+  --win-title-to: #1084d0;
+  --win-title-text: #ffffff;
+  --win-button: #d4d0c8;
+  --win-blue: #000080;
+  --win-highlight: #0a246a;
+  --win-highlight-text: #ffffff;
+  --win-link: #0000ff;
+
+  /* Keep legacy vars pointing to win equivalents */
+  --teal: #000080;
+  --teal-soft: #c0c8d8;
+  --peach: #c05800;
+  --peach-soft: #f0d8c0;
+  --card: #d4d0c8;
+  --border: #808080;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-body);
+  --font-sans: "MS Sans Serif", "Microsoft Sans Serif", Arial, sans-serif;
+  --font-mono: "Courier New", monospace;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
-  background: var(--background);
+  background: var(--win-bg);
   color: var(--foreground);
-  font-family: var(--font-body), sans-serif;
+  font-family: "MS Sans Serif", "Microsoft Sans Serif", Arial, sans-serif;
+  font-size: 11px;
 }
 
-h1,
-h2,
-h3 {
-  font-family: var(--font-heading), serif;
+h1, h2, h3 {
+  font-family: "MS Sans Serif", "Microsoft Sans Serif", Arial, sans-serif;
+  font-weight: bold;
 }
 
-.surface-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 1.25rem;
+/* ── Classic Win2k raised border ───────────────────── */
+.win-raised {
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-border-dark);
+  border-right: 2px solid var(--win-border-dark);
 }
 
-.focus-ring {
+/* ── Sunken / inset border ──────────────────────────── */
+.win-sunken {
+  border-top: 2px solid var(--win-border-dark);
+  border-left: 2px solid var(--win-border-dark);
+  border-bottom: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-light);
+}
+
+/* ── Classic window panel ───────────────────────────── */
+.win-panel {
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-border-darker);
+  border-right: 2px solid var(--win-border-darker);
+}
+
+/* Inner panel  (fieldset-like) */
+.win-group {
+  background: var(--win-face);
+  border-top: 1px solid var(--win-border-dark);
+  border-left: 1px solid var(--win-border-dark);
+  border-bottom: 1px solid var(--win-border-white);
+  border-right: 1px solid var(--win-border-white);
+}
+
+/* ── Title bar ──────────────────────────────────────── */
+.win-titlebar {
+  background: linear-gradient(to right, var(--win-title-from), var(--win-title-to));
+  color: var(--win-title-text);
+  font-weight: bold;
+  font-size: 11px;
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+
+.win-titlebar-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+/* Title-bar control buttons */
+.win-titlebar-btn {
+  width: 16px;
+  height: 14px;
+  background: var(--win-face);
+  border-top: 1px solid var(--win-border-white);
+  border-left: 1px solid var(--win-border-white);
+  border-bottom: 1px solid var(--win-border-dark);
+  border-right: 1px solid var(--win-border-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.win-titlebar-btn:active {
+  border-top: 1px solid var(--win-border-dark);
+  border-left: 1px solid var(--win-border-dark);
+  border-bottom: 1px solid var(--win-border-white);
+  border-right: 1px solid var(--win-border-white);
+}
+
+/* ── Toolbar ──────────────────────────────────────────── */
+.win-toolbar {
+  background: var(--win-face);
+  border-bottom: 1px solid var(--win-border-dark);
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.win-toolbar-btn {
+  background: var(--win-face);
+  border: 1px solid transparent;
+  padding: 2px 4px;
+  font-size: 11px;
+  color: #000;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.win-toolbar-btn:hover {
+  border-top: 1px solid var(--win-border-white);
+  border-left: 1px solid var(--win-border-white);
+  border-bottom: 1px solid var(--win-border-dark);
+  border-right: 1px solid var(--win-border-dark);
+}
+
+.win-toolbar-btn:active {
+  border-top: 1px solid var(--win-border-dark);
+  border-left: 1px solid var(--win-border-dark);
+  border-bottom: 1px solid var(--win-border-white);
+  border-right: 1px solid var(--win-border-white);
+}
+
+.win-toolbar-separator {
+  width: 1px;
+  background: var(--win-border-dark);
+  height: 16px;
+  margin: 0 3px;
+}
+
+/* ── Menubar ──────────────────────────────────────── */
+.win-menubar {
+  background: var(--win-face);
+  border-bottom: 1px solid var(--win-border-dark);
+  padding: 1px 4px;
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+}
+
+.win-menu-item {
+  padding: 2px 6px;
+  color: #000;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.win-menu-item:hover,
+.win-menu-item:focus {
+  background: var(--win-highlight);
+  color: var(--win-highlight-text);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(31, 107, 113, 0.4);
+}
+
+/* ── Classic button ──────────────────────────────────── */
+.win-btn {
+  background: var(--win-face);
+  border-top: 2px solid var(--win-border-white);
+  border-left: 2px solid var(--win-border-white);
+  border-bottom: 2px solid var(--win-border-darker);
+  border-right: 2px solid var(--win-border-darker);
+  padding: 4px 16px;
+  font-size: 11px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  color: #000;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  outline: none;
+}
+
+.win-btn:hover {
+  filter: brightness(1.02);
+}
+
+.win-btn:active,
+.win-btn-pressed {
+  border-top: 2px solid var(--win-border-darker);
+  border-left: 2px solid var(--win-border-darker);
+  border-bottom: 2px solid var(--win-border-white);
+  border-right: 2px solid var(--win-border-white);
+  padding-top: 5px;
+  padding-left: 17px;
+}
+
+.win-btn:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+
+/* Default (primary) button has dotted inner border */
+.win-btn-default {
+  border: 2px solid #000;
+  box-shadow: inset 1px 1px 0 var(--win-border-white), inset -1px -1px 0 var(--win-border-darker);
+}
+
+/* ── Input ────────────────────────────────────────────── */
+.win-input {
+  background: #ffffff;
+  border-top: 2px solid var(--win-border-darker);
+  border-left: 2px solid var(--win-border-darker);
+  border-bottom: 2px solid var(--win-border-light);
+  border-right: 2px solid var(--win-border-light);
+  padding: 2px 4px;
+  font-size: 11px;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  color: #000;
+  outline: none;
+  width: 100%;
+}
+
+.win-input:focus {
+  outline: none;
+}
+
+/* ── Status bar ───────────────────────────────────────── */
+.win-statusbar {
+  background: var(--win-face);
+  border-top: 1px solid var(--win-border-dark);
+  padding: 2px 6px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.win-statusbar-panel {
+  border-top: 1px solid var(--win-border-dark);
+  border-left: 1px solid var(--win-border-dark);
+  border-bottom: 1px solid var(--win-border-white);
+  border-right: 1px solid var(--win-border-white);
+  padding: 0 6px;
+  flex: 1;
+  font-size: 10px;
+}
+
+/* ── Icon images (placeholder pixel-art style blocks) ── */
+.win-icon {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+/* ── Progress bar ─────────────────────────────────────── */
+.win-progress-track {
+  background: #fff;
+  border-top: 1px solid var(--win-border-dark);
+  border-left: 1px solid var(--win-border-dark);
+  border-bottom: 1px solid var(--win-border-white);
+  border-right: 1px solid var(--win-border-white);
+  height: 16px;
+  padding: 1px;
+}
+
+/* ── Marquee / scrolling text ─────────────────────────── */
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.win-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  background: var(--win-face);
+  border-top: 1px solid var(--win-border-dark);
+  border-left: 1px solid var(--win-border-dark);
+  border-bottom: 1px solid var(--win-border-white);
+  border-right: 1px solid var(--win-border-white);
+  padding: 1px 0;
+}
+
+.win-marquee span {
+  display: inline-block;
+  animation: marquee 18s linear infinite;
+}
+
+/* ── Desktop background tiled pattern ─────────────────── */
+.win-desktop {
+  background-color: #008080; /* classic teal desktop */
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,0.04) 0px,
+    rgba(0,0,0,0.04) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  min-height: 100vh;
+}
+
+/* Window drop shadow */
+.win-window {
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.4);
+}
+
+/* ── Hyperlink style ──────────────────────────────────── */
+a.win-link {
+  color: var(--win-link);
+  text-decoration: underline;
+}
+a.win-link:hover {
+  color: #800000;
+}
+
+/* ── Step card ───────────────────────────────────────── */
+.win-step-card {
+  background: var(--win-face);
+  border-top: 2px solid var(--win-border-white);
+  border-left: 2px solid var(--win-border-white);
+  border-bottom: 2px solid var(--win-border-darker);
+  border-right: 2px solid var(--win-border-darker);
+  padding: 10px;
+}
+
+/* ── Fieldset legend style ────────────────────────────── */
+.win-fieldset {
+  border-top: 1px solid var(--win-border-dark);
+  border-left: 1px solid var(--win-border-dark);
+  border-bottom: 1px solid var(--win-border-white);
+  border-right: 1px solid var(--win-border-white);
+  padding: 8px 10px 10px;
+  margin: 0;
+}
+
+.win-legend {
+  font-size: 11px;
+  font-weight: bold;
+  padding: 0 4px;
+  background: var(--win-face);
 }
