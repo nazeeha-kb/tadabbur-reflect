@@ -77,7 +77,11 @@ export default function DashboardPage() {
                 </div>
                 <h3 className="mt-4 text-2xl text-[var(--teal)]">{item.title || "Untitled Reflection"}</h3>
                 <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-slate-700">{item.reflectionText}</p>
-                <p className="mt-4 text-xs text-slate-500">"{item.ayahs?.[0]?.translation || "Quran verse"}"</p>
+                <p className="mt-4 text-xs text-slate-500">
+                  <span className="text-slate-400">&ldquo;</span>
+                  {item.ayahs?.[0]?.translation || "Quran verse"}
+                  <span className="text-slate-400">&rdquo;</span>
+                </p>
               </article>
             ))}
           </section>
