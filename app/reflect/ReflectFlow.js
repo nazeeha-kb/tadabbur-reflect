@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import AyahsLoadingSkeleton from "@/components/AyahsLoadingSkeleton";
 import SiteHeader from "@/components/SiteHeader";
 import TagInput from "@/components/TagInput";
 import { saveReflection } from "@/lib/storage/reflections";
@@ -74,8 +75,11 @@ export default function ReflectFlow() {
         <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--peach)]">New Reflection</p>
         <h1 className="mt-2 text-6xl text-[var(--teal)]">{emotionQuery || "Reflection"}</h1>
 
-        <section className="mt-8 space-y-6" aria-live="polite">
-          {loading && <p className="surface-card p-6 text-sm text-slate-600">Loading curated ayahs...</p>}
+        <section className="mt-8 space-y-6" aria-live="polite" aria-busy={loading}>
+          {loading && <AyahsLoadingSkeleton count={3} />}
+          {loading && (
+            <p className="sr-only">Loading curated ayahs for your reflection. Please wait.</p>
+          )}
           {!loading && error && <p className="surface-card border-rose-300 p-6 text-sm text-rose-700">{error}</p>}
 
           {!loading &&

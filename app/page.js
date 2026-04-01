@@ -90,7 +90,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 pt-6 sm:gap-20 sm:px-6">
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 pt-6 sm:gap-25 sm:px-6 pt-20">
         <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
           <p className="rounded-full bg-[var(--peach-soft)] px-4 py-1 text-xs font-semibold tracking-[0.2em] text-[var(--peach)] uppercase">
             A Sanctuary For The Soul
@@ -118,7 +118,7 @@ export default function Home() {
               value={emotion}
               onChange={(event) => setEmotion(event.target.value)}
               placeholder="What is on your heart today?"
-              className=" h-11 min-w-0 flex-1 rounded-full border-0 bg-transparent px-1 text-sm text-slate-800 placeholder:text-slate-400"
+              className=" h-11 min-w-0 flex-1 rounded-full border-0 bg-transparent px-1 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
               required
             />
             <button

@@ -236,11 +236,12 @@ export default function DashboardPage() {
                 href={`/dashboard/${item.id}`}
                 className="surface-card group block p-6 text-left transition hover:border-[var(--teal)] hover:shadow-md focus-visible:focus-ring"
               >
-                <div className="flex items-center justify-between gap-4">
-                  <p className="rounded-full bg-[var(--peach-soft)] px-3 py-1 text-xs font-semibold text-[var(--peach)]">
-                    {item.emotion}
+                <div className="flex items-start justify-between gap-4">
+                  <p className="text-xs leading-snug text-[var(--peach)]">
+                    Reflection on:{" "}
+                    <span className="font-medium text-slate-700">&ldquo;{item.emotion || "—"}&rdquo;</span>
                   </p>
-                  <p className="text-xs font-semibold text-slate-500">{formatDate(item.createdAt)}</p>
+                  <p className="shrink-0 text-xs font-medium text-slate-500">{formatDate(item.createdAt)}</p>
                 </div>
                 <h2 className="mt-4 text-2xl text-[var(--teal)] group-hover:underline">{item.title || "Untitled Reflection"}</h2>
                 {(item.tags || []).length > 0 ? (

@@ -69,10 +69,15 @@ export default function ReflectionDetailPage() {
         </div>
 
         <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--peach)]">Edit reflection</p>
-        <h1 className="mt-2 text-4xl text-[var(--teal)] sm:text-5xl">{emotion || "Reflection"}</h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Reflection on:{" "}
+          <span className="font-medium text-slate-800">&ldquo;{emotion || "—"}&rdquo;</span>
+        </p>
+        <h1 className="mt-3 font-serif text-3xl text-[var(--teal)] sm:text-4xl">{title.trim() || "Untitled reflection"}</h1>
         {createdAt ? (
           <p className="mt-2 text-xs text-slate-500">
-            Saved {new Date(createdAt).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}
+            Saved{" "}
+            {new Date(createdAt).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}
           </p>
         ) : null}
 
