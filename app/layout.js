@@ -1,4 +1,4 @@
-import { Cormorant_Garamond, Manrope, Noto_Naskh_Arabic } from "next/font/google";
+import { Amiri, Cormorant_Garamond, Manrope } from "next/font/google";
 import "./globals.css";
 
 const headingFont = Cormorant_Garamond({
@@ -13,14 +13,18 @@ const bodyFont = Manrope({
   subsets: ["latin"],
 });
 
-const arabicFont = Noto_Naskh_Arabic({
+const arabicFont = Amiri({
   variable: "--font-arabic",
-  subsets: ["arabic"],
+  subsets: ["arabic", "latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata = {
   title: "Quran Reflect",
   description: "A calm space to reflect on Quranic guidance.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({ children }) {

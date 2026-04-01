@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
+import TagInput from "@/components/TagInput";
 import { saveReflection } from "@/lib/storage/reflections";
 
 export default function ReflectFlow() {
@@ -15,6 +16,7 @@ export default function ReflectFlow() {
   const [error, setError] = useState("");
   const [reflectionText, setReflectionText] = useState("");
   const [title, setTitle] = useState("");
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (!emotionQuery) {
@@ -57,6 +59,7 @@ export default function ReflectFlow() {
       ayahs,
       reflectionText: reflectionText.trim(),
       title: title.trim(),
+      tags,
       createdAt: new Date().toISOString(),
     };
 
@@ -86,26 +89,26 @@ export default function ReflectFlow() {
                   dir="rtl"
                   lang="ar"
                   style={{ fontFamily: "var(--font-arabic), serif" }}
-                  className="mt-5 text-right text-4xl text-[#0f4f5f] sm:text-5xl"
+                  className="mt-5 text-right text-3xl leading-[1.85] text-[#0f4f5f] sm:text-[2rem]"
                 >
                   {ayah.arabicText}
                 </p>
                 <p className="mt-6 text-xl leading-relaxed text-slate-800">{ayah.translation}</p>
                 {ayah.tafseer?.trim() ? (
-                  <p className="mt-5 rounded-xl border-l-4 border-[var(--teal)] bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                    {ayah.tafseer}
-                  </p>
+                  <div className="mt-5 rounded-xl border-l-4 border-[var(--teal)] bg-slate-50 px-4 py-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Context and tafsir</p>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-700">{ayah.tafseer}</p>
+                  </div>
                 ) : (
                   <p className="mt-5 rounded-xl border-l-4 border-slate-200 bg-slate-50/80 px-4 py-3 text-sm italic text-slate-600">
-                    Sit with this verse: notice the words that stand out, and ask what Allah might be addressing in your
-                    heart today.
+                    Tafsir for this verse could not be loaded. You can still reflect on the translation above.
                   </p>
                 )}
               </article>
             ))}
         </section>
 
-        <section className="mt-12 rounded-3xl bg-white/60 p-6 sm:p-8">
+        <section className="mt-12 rounded-3xl bg-white/60 p-6 sm:p-8 space-y-6">
           <h2 className="text-4xl text-slate-800">Reflect on these verses</h2>
           <div className="mt-6 space-y-4">
             <label htmlFor="title" className="text-sm font-medium text-slate-700">
@@ -119,6 +122,10 @@ export default function ReflectFlow() {
               className="focus-ring w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm"
               placeholder="A short title for this reflection"
             />
+            <label htmlFor="tags" className="text-sm font-medium text-slate-700">
+              Tags (optional)
+            </label>
+            <TagInput id="tags" tags={tags} onChange={setTags} placeholder="e.g. gratitude, patience — press Enter" />
             <label htmlFor="reflection" className="text-sm font-medium text-slate-700">
               Your reflection
             </label>
