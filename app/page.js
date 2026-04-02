@@ -90,7 +90,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 pt-6 sm:gap-25 sm:px-6 pt-20">
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-26 px-4 pb-16 pt-6 sm:gap-25 sm:px-6 pt-20">
         <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
           <p className="rounded-full bg-[var(--peach-soft)] px-4 py-1 text-xs font-semibold tracking-[0.2em] text-[var(--peach)] uppercase">
             A Sanctuary For The Soul
