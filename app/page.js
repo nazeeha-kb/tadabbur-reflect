@@ -90,44 +90,58 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-26 px-4 pb-16 pt-6 sm:gap-25 sm:px-6 pt-20">
-        <section className="mx-auto flex w-full max-w-3xl flex-col items-center text-center">
-          <p className="rounded-full bg-[var(--peach-soft)] px-4 py-1 text-xs font-semibold tracking-[0.2em] text-[var(--peach)] uppercase">
-            A Sanctuary For The Soul
-          </p>
-          <h1 className="mt-6 text-5xl leading-none text-[var(--teal)] sm:text-7xl">
-            Find solace in <span className="italic text-[var(--peach)]">His words.</span>
-          </h1>
-          <p className="mt-6 max-w-xl text-base text-slate-600 sm:text-lg">
-            Explore divine guidance tailored to your emotions and life&apos;s present journey.
-          </p>
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 sm:gap-20 sm:px-6">
+        <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden pb-8 sm:pb-10 pt-30 sm:pt-35">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-24 left-[8%] h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,rgba(31,107,113,0.2),rgba(31,107,113,0)_70%)] blur-2xl"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute right-[6%] top-8 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(212,141,98,0.18),rgba(212,141,98,0)_70%)] blur-2xl"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute bottom-0 left-1/2 h-52 w-[48rem] max-w-[92vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(31,107,113,0.1),rgba(31,107,113,0)_72%)] blur-xl"
+          />
+          <div className="mx-auto flex w-full max-w-3xl flex-col items-center px-4 text-center sm:px-6">
+            <p className="rounded-full bg-[var(--peach-soft)] px-4 py-1 text-xs font-semibold tracking-[0.2em] text-[var(--peach)] uppercase">
+              A Sanctuary For The Soul
+            </p>
+            <h1 className="mt-6 text-5xl leading-none text-[var(--teal)] sm:text-7xl">
+              Find solace in <span className="italic text-[var(--peach)]">His words.</span>
+            </h1>
+            <p className="mt-6 max-w-xl text-base text-slate-600 sm:text-lg">
+              Explore divine guidance tailored to your emotions and life&apos;s present journey.
+            </p>
 
-          <form
-            onSubmit={handleSubmit}
-            className="mt-10 flex w-full max-w-2xl items-center gap-2 rounded-full border border-[var(--border)] bg-white py-1.5 pl-4 pr-1.5 shadow-md"
-          >
-            <label htmlFor="emotion" className="sr-only">
-              Describe how you feel
-            </label>
-            <span className="shrink-0 text-slate-400" aria-hidden>
-              <SearchIcon className="h-5 w-5" />
-            </span>
-            <input
-              id="emotion"
-              name="emotion"
-              value={emotion}
-              onChange={(event) => setEmotion(event.target.value)}
-              placeholder="What is on your heart today?"
-              className=" h-11 min-w-0 flex-1 rounded-full border-0 bg-transparent px-1 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
-              required
-            />
-            <button
-              type="submit"
-              className="h-11 shrink-0 rounded-full bg-[var(--peach)] px-6 text-sm font-semibold text-white transition hover:brightness-105"
+            <form
+              onSubmit={handleSubmit}
+              className="mt-10 flex w-full max-w-2xl items-center gap-2 rounded-full border border-[var(--border)] bg-white py-1.5 pl-4 pr-1.5 shadow-md"
             >
-              Reflect
-            </button>
-          </form>
+              <label htmlFor="emotion" className="sr-only">
+                Describe how you feel
+              </label>
+              <span className="shrink-0 text-slate-400" aria-hidden>
+                <SearchIcon className="h-5 w-5" />
+              </span>
+              <input
+                id="emotion"
+                name="emotion"
+                value={emotion}
+                onChange={(event) => setEmotion(event.target.value)}
+                placeholder="What is on your heart today?"
+                className=" h-11 min-w-0 flex-1 rounded-full border-0 px-1 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
+                required
+              />
+              <button
+                type="submit"
+                className="h-11 shrink-0 rounded-full bg-[var(--peach)] px-6 text-sm font-semibold text-white transition hover:brightness-105"
+              >
+                Reflect
+              </button>
+            </form>
+          </div>
         </section>
 
         <section className="text-center" aria-labelledby="how-heading">
@@ -140,7 +154,7 @@ export default function Home() {
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[#7C8E8E] sm:text-[0.9375rem]">
             A simple three-step journey to find clarity and peace through divine wisdom.
           </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-6 lg:mt-14 lg:grid-cols-3 lg:gap-7">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-6 lg:mt-14 lg:grid-cols-3 lg:gap-7 items-center justify-center">
             {HOW_STEPS.map((item) => {
               const Icon = item.Icon;
               return (

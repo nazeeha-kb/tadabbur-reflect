@@ -8,7 +8,7 @@ export default function SiteHeader() {
   const isDashboard = pathname === "/dashboard" || pathname?.startsWith("/dashboard/");
 
   return (
-    <header className="w-full border-b border-slate-200/90 bg-[var(--background)] mb-10">
+    <header className="w-full border-b border-slate-200/90 bg-[var(--background)]">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <Link href="/" className="inline-flex items-center gap-2.5 font-serif text-lg font-semibold text-[var(--teal)]">
           <span className="inline-flex h-8 w-8 shrink-0 rounded-full bg-[var(--teal)]" aria-hidden />

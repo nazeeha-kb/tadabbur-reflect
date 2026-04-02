@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AyahsLoadingSkeleton from "@/components/AyahsLoadingSkeleton";
+import AyahAudioButton from "@/components/AyahAudioButton";
 import SiteHeader from "@/components/SiteHeader";
-import TagInput from "@/components/TagInput";
-import { saveReflection } from "@/lib/storage/reflections";
 
 export default function ReflectFlow() {
   const searchParams = useSearchParams();
@@ -15,9 +14,6 @@ export default function ReflectFlow() {
   const [ayahs, setAyahs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [reflectionText, setReflectionText] = useState("");
-  const [title, setTitle] = useState("");
-  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     if (!emotionQuery) {
@@ -50,24 +46,6 @@ export default function ReflectFlow() {
     };
   }, [emotionQuery]);
 
-  const handleSave = () => {
-    if (!reflectionText.trim() || ayahs.length === 0) return;
-
-    const reflection = {
-      id: crypto.randomUUID(),
-      emotion: emotionQuery,
-      userInput: emotionQuery,
-      ayahs,
-      reflectionText: reflectionText.trim(),
-      title: title.trim(),
-      tags,
-      createdAt: new Date().toISOString(),
-    };
-
-    saveReflection(reflection);
-    router.push("/dashboard");
-  };
-
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -85,7 +63,22 @@ export default function ReflectFlow() {
           {!loading &&
             !error &&
             ayahs.map((ayah) => (
-              <article key={ayah.id} className="surface-card p-6 sm:p-8">
+              <article
+                key={ayah.id}
+                role="link"
+                tabIndex={0}
+                onClick={() => router.push(`/reflect/${encodeURIComponent(ayah.verseKey)}?q=${encodeURIComponent(emotionQuery)}`)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    router.push(`/reflect/${encodeURIComponent(ayah.verseKey)}?q=${encodeURIComponent(emotionQuery)}`);
+                  }
+                }}
+                className="surface-card group relative block cursor-pointer p-6 sm:p-8 focus-visible:focus-ring"
+              >
+                <div className="absolute right-4 top-4">
+                  <AyahAudioButton verseKey={ayah.verseKey} />
+                </div>
                 <p className="text-xs font-semibold tracking-wide uppercase text-[var(--peach)]">
                   Surah {ayah.surahName} · {ayah.ayahNumber}
                 </p>
@@ -98,61 +91,14 @@ export default function ReflectFlow() {
                   {ayah.arabicText}
                 </p>
                 <p className="mt-6 text-xl leading-relaxed text-slate-800">{ayah.translation}</p>
-                {ayah.tafseer?.trim() ? (
-                  <div className="mt-5 rounded-xl border-l-4 border-[var(--teal)] bg-slate-50 px-4 py-3">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Context and tafsir</p>
-                    <p className="mt-2 text-sm leading-relaxed text-slate-700">{ayah.tafseer}</p>
-                  </div>
-                ) : (
-                  <p className="mt-5 rounded-xl border-l-4 border-slate-200 bg-slate-50/80 px-4 py-3 text-sm italic text-slate-600">
-                    Tafsir for this verse could not be loaded. You can still reflect on the translation above.
-                  </p>
-                )}
+                <p className="mt-5 text-sm text-slate-600">
+                  Select this ayah to see its context and tafsir, and write your reflection.
+                </p>
+                <p className="mt-5 text-xs font-medium text-[var(--teal)] opacity-0 transition group-hover:opacity-100">
+                  Open this ayah →
+                </p>
               </article>
             ))}
-        </section>
-
-        <section className="mt-12 rounded-3xl bg-white/60 p-6 sm:p-8 space-y-6">
-          <h2 className="text-4xl text-slate-800">Reflect on these verses</h2>
-          <div className="mt-6 space-y-4">
-            <label htmlFor="title" className="text-sm font-medium text-slate-700">
-              Title (optional)
-            </label>
-            <input
-              id="title"
-              name="title"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              className="focus-ring w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm"
-              placeholder="A short title for this reflection"
-            />
-            <label htmlFor="tags" className="text-sm font-medium text-slate-700">
-              Tags (optional)
-            </label>
-            <TagInput id="tags" tags={tags} onChange={setTags} placeholder="e.g. gratitude, patience — press Enter" />
-            <label htmlFor="reflection" className="text-sm font-medium text-slate-700">
-              Your reflection
-            </label>
-            <textarea
-              id="reflection"
-              name="reflection"
-              value={reflectionText}
-              onChange={(event) => setReflectionText(event.target.value)}
-              rows={8}
-              className="focus-ring w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm"
-              placeholder="Write your thoughts, what touched your heart, and what action you want to take."
-            />
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={loading || !!error || !reflectionText.trim()}
-                className="rounded-full bg-[var(--teal)] px-6 py-3 text-sm font-semibold text-white transition enabled:hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:focus-ring"
-              >
-                Complete Reflection
-              </button>
-            </div>
-          </div>
         </section>
       </main>
     </div>

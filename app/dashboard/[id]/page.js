@@ -133,7 +133,7 @@ export default function ReflectionDetailPage() {
               value={reflectionText}
               onChange={(event) => setReflectionText(event.target.value)}
               rows={8}
-              className="focus-ring w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm"
+              className="focus-ring reflection-writing w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3"
               placeholder="Your thoughts and notes."
             />
             <div className="flex justify-end gap-3">

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import SiteHeader from "@/components/SiteHeader";
 import { SearchIcon, SlidersIcon } from "@/components/icons";
-import { getStoredReflections } from "@/lib/storage/reflections";
+import { deleteReflection, getStoredReflections } from "@/lib/storage/reflections";
 
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString(undefined, {
@@ -104,10 +104,18 @@ export default function DashboardPage() {
     setSelectedTags([]);
   };
 
+  const handleDelete = (id) => {
+    const ok = window.confirm("Delete this reflection? This cannot be undone.");
+    if (!ok) return;
+    const deleted = deleteReflection(id);
+    if (!deleted) return;
+    setReflections((prev) => prev.filter((r) => r.id !== id));
+  };
+
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-5 sm:px-6">
+      <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-5 sm:px-6 pt-20">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-5xl text-[var(--teal)]">My Reflections</h1>
@@ -231,19 +239,37 @@ export default function DashboardPage() {
         ) : filtered.length > 0 ? (
           <section className="mt-8 grid gap-4 md:grid-cols-2" aria-label="Saved reflections">
             {filtered.map((item) => (
-              <Link
+              <article
                 key={item.id}
-                href={`/dashboard/${item.id}`}
-                className="surface-card group block p-6 text-left transition hover:border-[var(--teal)] hover:shadow-md focus-visible:focus-ring"
+                className="surface-card group p-6 text-left transition hover:border-[var(--teal)] hover:shadow-md"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-3">
                   <p className="text-xs leading-snug text-[var(--peach)]">
                     Reflection on:{" "}
                     <span className="font-medium text-slate-700">&ldquo;{item.emotion || "—"}&rdquo;</span>
                   </p>
-                  <p className="shrink-0 text-xs font-medium text-slate-500">{formatDate(item.createdAt)}</p>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <p className="text-xs font-medium text-slate-500">{formatDate(item.createdAt)}</p>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(item.id)}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-md text-rose-600 transition hover:bg-rose-50 hover:text-rose-700 focus-visible:focus-ring"
+                      aria-label={`Delete reflection ${item.title || "untitled reflection"}`}
+                      title="Delete reflection"
+                    >
+                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                        <path d="M3 6h18" strokeLinecap="round" />
+                        <path d="M8 6V4h8v2" strokeLinecap="round" />
+                        <path d="M6 6l1 14h10l1-14" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M10 10v7M14 10v7" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-                <h2 className="mt-4 text-2xl text-[var(--teal)] group-hover:underline">{item.title || "Untitled Reflection"}</h2>
+                <Link href={`/dashboard/${item.id}`} className="block focus-visible:focus-ring">
+                  <h2 className="mt-4 text-2xl text-[var(--teal)] group-hover:underline">
+                    {item.title || "Untitled Reflection"}
+                  </h2>
                 {(item.tags || []).length > 0 ? (
                   <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Your tags">
                     {(item.tags || []).map((t) => (
@@ -273,7 +299,8 @@ export default function DashboardPage() {
                     })}
                   </ul>
                 ) : null}
-              </Link>
+                </Link>
+              </article>
             ))}
           </section>
         ) : null}

@@ -1,4 +1,4 @@
-import { Amiri, Cormorant_Garamond, Manrope } from "next/font/google";
+import { Amiri, Cormorant_Garamond, Manrope, Patrick_Hand } from "next/font/google";
 import "./globals.css";
 
 const headingFont = Cormorant_Garamond({
@@ -19,6 +19,12 @@ const arabicFont = Amiri({
   weight: ["400", "700"],
 });
 
+const writingFont = Patrick_Hand({
+  variable: "--font-writing",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata = {
   title: "Quran Reflect",
   description: "A calm space to reflect on Quranic guidance.",
@@ -29,7 +35,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${headingFont.variable} ${bodyFont.variable} ${arabicFont.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${headingFont.variable} ${bodyFont.variable} ${arabicFont.variable} ${writingFont.variable} h-full antialiased`}
+    >
       <body className="min-h-full bg-stone-50 text-slate-900">{children}</body>
     </html>
   );
