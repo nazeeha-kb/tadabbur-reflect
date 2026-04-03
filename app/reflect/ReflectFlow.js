@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AyahsLoadingSkeleton from "@/components/AyahsLoadingSkeleton";
 import AyahAudioButton from "@/components/AyahAudioButton";
 import SiteHeader from "@/components/SiteHeader";
+import { formatVerseCitation } from "@/lib/quran/surahNames";
 
 export default function ReflectFlow() {
   const searchParams = useSearchParams();
@@ -32,7 +33,16 @@ export default function ReflectFlow() {
         if (!response.ok) {
           throw new Error(payload.message || "Unable to fetch verses.");
         }
-        if (alive) setAyahs(payload.ayahs || []);
+        if (alive) {
+          setAyahs(payload.ayahs || []);
+          try {
+            if (emotionQuery) {
+              sessionStorage.setItem(`reflect-themes:${emotionQuery}`, JSON.stringify(payload.themes || []));
+            }
+          } catch {
+            /* ignore */
+          }
+        }
       } catch (loadError) {
         if (alive) setError(loadError?.message || "Something went wrong.");
       } finally {
@@ -80,7 +90,7 @@ export default function ReflectFlow() {
                   <AyahAudioButton verseKey={ayah.verseKey} />
                 </div>
                 <p className="text-xs font-semibold tracking-wide uppercase text-[var(--peach)]">
-                  Surah {ayah.surahName} · {ayah.ayahNumber}
+                  {formatVerseCitation(ayah)}
                 </p>
                 <p
                   dir="rtl"

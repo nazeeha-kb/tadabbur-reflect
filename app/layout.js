@@ -1,4 +1,5 @@
 import { Amiri, Cormorant_Garamond, Manrope, Patrick_Hand } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const headingFont = Cormorant_Garamond({
@@ -39,7 +40,10 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${headingFont.variable} ${bodyFont.variable} ${arabicFont.variable} ${writingFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-stone-50 text-slate-900">{children}</body>
+      <body className="min-h-full bg-stone-50 text-slate-900">
+        {children}
+        <Toaster position="bottom-right" richColors closeButton />
+      </body>
     </html>
   );
 }

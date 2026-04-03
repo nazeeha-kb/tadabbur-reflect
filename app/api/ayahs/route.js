@@ -6,8 +6,8 @@ export async function GET(request) {
   const query = searchParams.get("q");
 
   try {
-    const ayahs = await getAyahsByEmotion(query);
-    return NextResponse.json({ ayahs });
+    const { ayahs, themes } = await getAyahsByEmotion(query);
+    return NextResponse.json({ ayahs, themes });
   } catch (error) {
     return NextResponse.json(
       { message: error?.message || "Failed to fetch ayahs." },

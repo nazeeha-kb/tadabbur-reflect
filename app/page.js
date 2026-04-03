@@ -43,6 +43,93 @@ function IconPen({ className }) {
   );
 }
 
+function IconSadness({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
+      <path
+        d="M12 28c2 4 6 6 12 6s10-2 12-6M10 18c0-4 4-8 14-8s14 4 14 8"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+      <path d="M18 34v4M24 36v4M30 34v4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconGrief({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
+      <path
+        d="M24 38c-8-6-14-14-14-22a10 10 0 0 1 20 0c0 8-6 16-14 22z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
+      />
+      <path d="M18 20l4 4M26 20l-4 4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconGratitude({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
+      <circle cx="24" cy="24" r="10" stroke="currentColor" strokeWidth="1.75" />
+      <path d="M24 14v-4M24 38v-4M34 24h4M10 24h4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconHope({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
+      <path
+        d="M24 40c-6-4-10-10-10-18 0-6 4-10 10-10s10 4 10 10c0 8-4 14-10 18z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
+      />
+      <path d="M24 22v10M20 26h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconAnxiety({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
+      <path
+        d="M8 20c4-2 8 2 12 0s8-2 12 0 8-2 12 0M8 28c4-2 8 2 12 0s8-2 12 0 8-2 12 0M8 36c4-2 8 2 12 0s8-2 12 0 8-2 12 0"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function IconPeace({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
+      <path
+        d="M28 12a8 8 0 1 1-8 16 8 8 0 0 1 8-16z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
+      />
+      <path d="M14 18l2 2M32 18l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const EXPLORE_BY_EMOTION = [
+  { label: "Sadness", query: "sadness sorrow comfort healing", Icon: IconSadness },
+  { label: "Grief", query: "grief loss patience comfort", Icon: IconGrief },
+  { label: "Gratitude", query: "gratitude family blessings rizq love", Icon: IconGratitude },
+  { label: "Hope", query: "hope mercy ease after hardship", Icon: IconHope },
+  { label: "Anxiety", query: "anxiety worry peace of heart trust", Icon: IconAnxiety },
+  { label: "Peace", query: "peace tranquility heart contentment", Icon: IconPeace },
+];
+
 const HOW_STEPS = [
   {
     step: "STEP 01",
@@ -84,6 +171,13 @@ export default function Home() {
     event.preventDefault();
     const trimmed = emotion.trim();
     if (!trimmed) return;
+    router.push(`/reflect?q=${encodeURIComponent(trimmed)}`);
+  };
+
+  const handleExploreCard = (query) => {
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    setEmotion(trimmed);
     router.push(`/reflect?q=${encodeURIComponent(trimmed)}`);
   };
 
@@ -141,6 +235,35 @@ export default function Home() {
                 Reflect
               </button>
             </form>
+          </div>
+        </section>
+
+        <section className="w-full text-left" aria-labelledby="explore-heading">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <h2 id="explore-heading" className="font-serif text-3xl text-[var(--teal)] sm:text-4xl">
+              Explore by Emotion
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+              Choose a state of heart to discover verses tailored for your current journey.
+            </p>
+            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+              {EXPLORE_BY_EMOTION.map((item) => {
+                const Icon = item.Icon;
+                return (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={() => handleExploreCard(item.query)}
+                    className="flex flex-col items-center rounded-3xl border border-[var(--border)] bg-[#f4f1ea]/90 px-4 py-6 text-center transition hover:border-[var(--teal)]/35 hover:shadow-md focus-visible:focus-ring"
+                  >
+                    <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e8e2d6] text-[var(--teal)]">
+                      <Icon className="h-7 w-7" />
+                    </span>
+                    <span className="mt-4 font-serif text-base text-[var(--teal)]">{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </section>
 

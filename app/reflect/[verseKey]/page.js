@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import AyahAudioButton from "@/components/AyahAudioButton";
 import SiteHeader from "@/components/SiteHeader";
 import TagInput from "@/components/TagInput";
+import { formatVerseCitation } from "@/lib/quran/surahNames";
 import { saveReflection } from "@/lib/storage/reflections";
+import { toast } from "sonner";
 
 export default function ReflectAyahPage() {
   const params = useParams();
@@ -31,6 +33,13 @@ export default function ReflectAyahPage() {
   const [reflectionText, setReflectionText] = useState("");
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
+  const [saving, setSaving] = useState(false);
+  const didPrefillTags = useRef(false);
+
+  useEffect(() => {
+    didPrefillTags.current = false;
+    setTags([]);
+  }, [verseKey]);
 
   useEffect(() => {
     if (!verseKey) {
@@ -43,7 +52,6 @@ export default function ReflectAyahPage() {
       try {
         setLoading(true);
         setError("");
-        // Prefer loading from the existing search results for this emotion so we keep translation + tafsir consistent.
         if (emotionQuery) {
           const listRes = await fetch(`/api/ayahs?q=${encodeURIComponent(emotionQuery)}`, { cache: "no-store" });
           const listPayload = await listRes.json();
@@ -72,31 +80,86 @@ export default function ReflectAyahPage() {
     };
   }, [router, verseKey, emotionQuery]);
 
-  const handleSave = () => {
+  useEffect(() => {
+    if (!ayah || didPrefillTags.current) return;
+
+    let themes = [];
+    try {
+      if (emotionQuery) {
+        themes = JSON.parse(sessionStorage.getItem(`reflect-themes:${emotionQuery}`) || "[]");
+      }
+    } catch {
+      themes = [];
+    }
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/reflection-tags", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            searchQuery: emotionQuery,
+            ayahTranslation: ayah.translation || "",
+            reflectionText: "",
+            themes,
+          }),
+        });
+        const data = await res.json();
+        if (!cancelled && res.ok && Array.isArray(data.tags) && data.tags.length > 0) {
+          setTags(data.tags);
+        }
+      } catch {
+        /* optional */
+      } finally {
+        if (!cancelled) didPrefillTags.current = true;
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ayah, emotionQuery]);
+
+  const handleSave = async () => {
     if (!ayah || !reflectionText.trim()) return;
 
-    const reflection = {
-      id: crypto.randomUUID(),
-      emotion: emotionQuery || "Selected ayah",
-      userInput: emotionQuery || verseKey,
-      ayahs: [ayah],
-      reflectionText: reflectionText.trim(),
-      title: title.trim(),
-      tags,
-      createdAt: new Date().toISOString(),
-      verseKey,
-    };
-
-    saveReflection(reflection);
-    router.push("/dashboard");
+    setSaving(true);
+    try {
+      const reflection = {
+        id: crypto.randomUUID(),
+        emotion: emotionQuery || "Selected ayah",
+        userInput: emotionQuery || verseKey,
+        ayahs: [ayah],
+        reflectionText: reflectionText.trim(),
+        title: title.trim(),
+        tags,
+        createdAt: new Date().toISOString(),
+        verseKey,
+      };
+      saveReflection(reflection);
+      toast.success("Reflection saved.");
+      router.push("/reflections");
+    } catch {
+      toast.error("Could not save your reflection.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="relative min-h-screen">
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 bg-stone-50 bg-[radial-gradient(ellipse_90%_60%_at_50%_-15%,rgba(212,141,98,0.09),transparent_55%),radial-gradient(ellipse_70%_45%_at_100%_30%,rgba(31,107,113,0.07),transparent_50%),radial-gradient(ellipse_55%_40%_at_0%_85%,rgba(31,107,113,0.05),transparent_50%)]"
+      />
       <SiteHeader />
-      <main className="mx-auto w-full max-w-5xl px-4 pb-16 pt-4 sm:px-6">
+      <main className="relative mx-auto w-full max-w-5xl px-4 pb-16 pt-4 sm:px-6">
         <div className="flex items-center justify-between gap-4">
-          <Link href={emotionQuery ? `/reflect?q=${encodeURIComponent(emotionQuery)}` : "/"} className="text-sm font-medium text-[var(--teal)] hover:underline">
+          <Link
+            href={emotionQuery ? `/reflect?q=${encodeURIComponent(emotionQuery)}` : "/"}
+            className="text-sm font-medium text-[var(--teal)] hover:underline"
+          >
             ← Back
           </Link>
         </div>
@@ -112,7 +175,7 @@ export default function ReflectAyahPage() {
                 <AyahAudioButton verseKey={ayah.verseKey} />
               </div>
               <p className="text-xs font-semibold tracking-wide uppercase text-[var(--peach)]">
-                Surah {ayah.surahName} · {ayah.ayahNumber}
+                {formatVerseCitation(ayah)}
               </p>
               <p
                 dir="rtl"
@@ -156,6 +219,9 @@ export default function ReflectAyahPage() {
             <label htmlFor="reflection" className="text-sm font-medium text-slate-700">
               Your reflection
             </label>
+            <p className="text-xs text-slate-500">
+              Markdown supported: **bold**, *italic*, lists, and &gt; quotes.
+            </p>
             <textarea
               id="reflection"
               name="reflection"
@@ -169,10 +235,10 @@ export default function ReflectAyahPage() {
               <button
                 type="button"
                 onClick={handleSave}
-                disabled={!reflectionText.trim() || !ayah}
+                disabled={!reflectionText.trim() || !ayah || saving}
                 className="rounded-full bg-[var(--teal)] px-6 py-3 text-sm font-semibold text-white transition enabled:hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:focus-ring"
               >
-                Save Reflection
+                {saving ? "Saving…" : "Save Reflection"}
               </button>
             </div>
           </div>
@@ -181,4 +247,3 @@ export default function ReflectAyahPage() {
     </div>
   );
 }
-

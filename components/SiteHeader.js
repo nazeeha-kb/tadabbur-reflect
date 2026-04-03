@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 
 export default function SiteHeader() {
   const pathname = usePathname();
-  const isDashboard = pathname === "/dashboard" || pathname?.startsWith("/dashboard/");
+  const isDashboard = pathname === "/dashboard";
+  const isReflections = pathname === "/reflections" || pathname?.startsWith("/reflections/");
 
   return (
     <header className="w-full border-b border-slate-200/90 bg-[var(--background)]">
@@ -14,12 +15,12 @@ export default function SiteHeader() {
           <span className="inline-flex h-8 w-8 shrink-0 rounded-full bg-[var(--teal)]" aria-hidden />
           <span>Quran Reflect</span>
         </Link>
-        <div className="flex items-center gap-3 sm:gap-4">
-          <nav aria-label="Primary navigation">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <nav aria-label="Primary navigation" className="flex flex-wrap items-center gap-2 sm:gap-3">
             <Link
-              href="/dashboard"
+              href="/reflections"
               className={`focus-visible:focus-ring inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition sm:px-3.5 ${
-                isDashboard
+                isReflections
                   ? "bg-[var(--teal-soft)] text-[var(--teal)] ring-1 ring-[var(--teal)]/25"
                   : "text-slate-600 hover:bg-slate-100/80 hover:text-[var(--teal)] ring-1 ring-[var(--teal)]/25"
               }`}
@@ -37,6 +38,27 @@ export default function SiteHeader() {
                 <path d="M8 7h8M8 11h6" strokeLinecap="round" />
               </svg>
               My Reflections
+            </Link>
+            <Link
+              href="/dashboard"
+              className={`focus-visible:focus-ring inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition sm:px-3.5 ${
+                isDashboard
+                  ? "bg-[var(--teal-soft)] text-[var(--teal)] ring-1 ring-[var(--teal)]/25"
+                  : "text-slate-600 hover:bg-slate-100/80 hover:text-[var(--teal)] ring-1 ring-[var(--teal)]/25"
+              }`}
+            >
+              <svg
+                className="h-4 w-4 shrink-0 opacity-80"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M9 22V12h6v10" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Dashboard
             </Link>
           </nav>
           <div

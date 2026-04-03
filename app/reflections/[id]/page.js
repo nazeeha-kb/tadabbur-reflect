@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 import TagInput from "@/components/TagInput";
+import { formatVerseCitation } from "@/lib/quran/surahNames";
 import { getReflectionById, updateReflection } from "@/lib/storage/reflections";
+import { toast } from "sonner";
 
 export default function ReflectionDetailPage() {
   const params = useParams();
@@ -22,12 +24,12 @@ export default function ReflectionDetailPage() {
 
   useEffect(() => {
     if (!id) {
-      router.replace("/dashboard");
+      router.replace("/reflections");
       return;
     }
     const r = getReflectionById(id);
     if (!r) {
-      router.replace("/dashboard");
+      router.replace("/reflections");
       return;
     }
     setTitle(r.title || "");
@@ -46,7 +48,12 @@ export default function ReflectionDetailPage() {
       reflectionText: reflectionText.trim(),
       tags,
     });
-    if (ok) router.push("/dashboard");
+    if (!ok) {
+      toast.error("Could not save changes.");
+      return;
+    }
+    toast.success("Reflection saved.");
+    router.push("/reflections");
   };
 
   if (!loaded) {
@@ -63,7 +70,7 @@ export default function ReflectionDetailPage() {
       <SiteHeader />
       <main className="mx-auto w-full max-w-5xl px-4 pb-16 pt-4 sm:px-6">
         <div className="flex flex-wrap items-center gap-3 text-sm">
-          <Link href="/dashboard" className="font-medium text-[var(--teal)] hover:underline">
+          <Link href="/reflections" className="font-medium text-[var(--teal)] hover:underline">
             ← My Reflections
           </Link>
         </div>
@@ -85,7 +92,7 @@ export default function ReflectionDetailPage() {
           {ayahs.map((ayah) => (
             <article key={ayah.id ?? ayah.verseKey} className="surface-card p-6 sm:p-8">
               <p className="text-xs font-semibold tracking-wide uppercase text-[var(--peach)]">
-                Surah {ayah.surahName} · {ayah.ayahNumber}
+                {formatVerseCitation(ayah)}
               </p>
               <p
                 dir="rtl"
@@ -127,6 +134,7 @@ export default function ReflectionDetailPage() {
             <label htmlFor="edit-reflection" className="text-sm font-medium text-slate-700">
               Your reflection
             </label>
+            <p className="text-xs text-slate-500">Markdown: **bold**, *italic*, lists, &gt; quotes, line breaks.</p>
             <textarea
               id="edit-reflection"
               name="reflection"
@@ -138,7 +146,7 @@ export default function ReflectionDetailPage() {
             />
             <div className="flex justify-end gap-3">
               <Link
-                href="/dashboard"
+                href="/reflections"
                 className="inline-flex items-center rounded-full border border-[var(--border)] px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-white"
               >
                 Cancel
