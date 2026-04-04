@@ -80,7 +80,7 @@ export default function Home() {
   return (
     <div className="min-h-screen relative">
       <SiteHeader />
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-8 pb-16 sm:gap-20 sm:px-6 relative z-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 sm:gap-20 sm:px-6 relative z-10">
         <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden pb-8 sm:pb-10 pt-30 sm:pt-35">
           {/* Decorative */}
           <div
