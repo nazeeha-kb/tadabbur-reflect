@@ -61,54 +61,57 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-20 pt-5 sm:px-6 pt-20">
-        <div className="text-center sm:text-left">
-          <h1 className="font-serif text-4xl text-[var(--teal)] sm:text-5xl">Your Journey</h1>
+      <main className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6 md:pt-20 pt-15">
+        <div className="text-center flex flex-col items-center">
+          <h1 className="mt-6 text-5xl leading-none text-[var(--teal)] sm:text-7xl">
+            Your Journey
+          </h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600 sm:mx-0 mx-auto">
             A gentle overview of your reflection practice and spiritual growth.
           </p>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-12 lg:items-start">
-          <div className="grid grid-cols-2 gap-4 lg:col-span-7">
-            <section className="surface-card flex flex-col justify-between rounded-3xl p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--peach)]">Milestones</p>
-              <p className="mt-4 font-serif text-4xl tabular-nums text-[var(--teal)]">{total}</p>
-              <p className="mt-2 text-sm text-slate-600">Total Reflections</p>
-            </section>
-            <section className="surface-card flex flex-col justify-between rounded-3xl p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--peach)]">Consistency</p>
-              <p className="mt-4 font-serif text-4xl tabular-nums text-[var(--teal)]">{streak}</p>
-              <p className="mt-2 text-sm text-slate-600">Day Streak</p>
-            </section>
-            <section className="surface-card flex flex-col justify-between rounded-3xl p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--peach)]">Inner landscape</p>
-              <p className="mt-4 text-sm leading-relaxed text-slate-700 sm:text-base">
-                {themeWord ? (
-                  <>
-                    You often reflect on{" "}
-                    <span className="font-serif italic text-[var(--peach)]">{themeWord}</span>.
-                  </>
-                ) : (
-                  "Your themes will emerge as you journal and tag your reflections."
-                )}
-              </p>
-            </section>
-            <section className="surface-card flex flex-col justify-between rounded-3xl p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--peach)]">Recency</p>
-              <p className="mt-4 text-sm text-slate-700 sm:text-base">
-                {lastIso ? (
-                  <>
-                    Last reflection:{" "}
-                    <span className="font-serif text-slate-500">{formatInsightMonthDay(lastIso)}</span>
-                  </>
-                ) : (
-                  "No reflections yet."
-                )}
-              </p>
-            </section>
-          </div>
-
+        {/* <div className="mt-10 lg:items-start"> */}
+        <div className="grid grid-cols-12 gap-4 pt-20 pb-10">
+          {/* Total reflections */}
+          <section className="surface-card dashboard-card">
+            <small>Milestones</small>
+            <p className="dashboard-card__number">{total}</p>
+            <p className="text-md text-slate-500 font-semibold">Total Reflections</p>
+          </section>
+          <section className="surface-card dashboard-card">
+            <small>Consistency</small>
+            <p className="dashboard-card__number">{streak}</p>
+            <p className="text-md text-slate-500 font-semibold">Day Streak</p>
+          </section>
+          <section className="surface-card dashboard-card gap-6">
+            <small>Inner landscape</small>
+            <p className="font-serif tabular-nums font-light text-[var(--teal)] md:text-4xl text-2xl">
+              {themeWord ? (
+                <div className="flex flex-col">
+                  You often reflect on
+                  <span className="font-serif italic text-[var(--peach)]">{themeWord}</span>
+                </div>
+              ) : (
+                "Your themes will emerge as you journal and tag your reflections."
+              )}
+            </p>
+          </section>
+          <section className="surface-card dashboard-card gap-6">
+            <small>Recency</small>
+            <p className="font-serif tabular-nums font-light text-[var(--teal)] md:text-4xl text-2xl">
+              {lastIso ? (
+                <div className="flex flex-col">
+                  Last reflection:{" "}
+                  <span className="font-serif text-slate-500">{formatInsightMonthDay(lastIso)}</span>
+                </div>
+              ) : (
+                "No reflections yet."
+              )}
+            </p>
+          </section>
+        </div>
+        {/* 
           <aside className="surface-card flex flex-col rounded-3xl p-6 lg:col-span-5">
             <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">Next milestone</p>
             <div className="mt-6 flex flex-col items-center">
@@ -142,17 +145,17 @@ export default function DashboardPage() {
                 </li>
               ))}
             </ul>
-          </aside>
-        </div>
+          </aside> */}
+        {/* </div> */}
 
         <div className="mt-12 flex flex-col items-center gap-3">
           <Link
             href="/"
-            className="inline-flex h-12 min-w-[16rem] items-center justify-center rounded-full bg-[var(--teal)] px-8 text-sm font-semibold text-white transition hover:brightness-105 focus-visible:focus-ring"
+            className="inline-flex h-12 min-w-[16rem] items-center justify-center rounded-full bg-[var(--teal)] px-8 text-sm font-semibold text-white transition hover:brightness-105 focus-visible:focus-ring shadow-lg"
           >
             + Write a New Reflection
           </Link>
-          <Link href="/reflections" className="text-sm text-slate-500 transition hover:text-[var(--teal)]">
+          <Link href="/reflections" className="text-sm text-slate-500 transition hover:text-[var(--teal)] font-semibold">
             View full history →
           </Link>
         </div>

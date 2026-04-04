@@ -1,74 +1,95 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function SiteHeader() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isHome = pathname === "/";
   const isDashboard = pathname === "/dashboard";
   const isReflections = pathname === "/reflections" || pathname?.startsWith("/reflections/");
 
+  const navLinks = [
+    { href: "/", label: "Home", active: isHome },
+    { href: "/reflections", label: "My Reflections", active: isReflections },
+    { href: "/dashboard", label: "Dashboard", active: isDashboard },
+  ];
+
   return (
-    <header className="w-full border-b border-slate-200/90 bg-[var(--background)]">
+    <header className="w-full border-b border-slate-200/90 bg-background">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <Link href="/" className="inline-flex items-center gap-2.5 font-serif text-lg font-semibold text-[var(--teal)]">
-          <span className="inline-flex h-8 w-8 shrink-0 rounded-full bg-[var(--teal)]" aria-hidden />
-          <span>Quran Reflect</span>
+        <Link href="/" className="inline-flex items-center gap-2.5 font-serif text-lg font-semibold text-(--teal)">
+          <span className="inline-flex h-8 w-8 shrink-0 rounded-full bg-(--teal)" aria-hidden />
+          <span>Tadabbur</span>
         </Link>
+
         <div className="flex items-center gap-2 sm:gap-3">
-          <nav aria-label="Primary navigation" className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <Link
-              href="/reflections"
-              className={`focus-visible:focus-ring inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition sm:px-3.5 ${
-                isReflections
-                  ? "bg-[var(--teal-soft)] text-[var(--teal)] ring-1 ring-[var(--teal)]/25"
-                  : "text-slate-600 hover:bg-slate-100/80 hover:text-[var(--teal)] ring-1 ring-[var(--teal)]/25"
-              }`}
-            >
-              <svg
-                className="h-4 w-4 shrink-0 opacity-80"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden
+          <button
+            type="button"
+            aria-controls="primary-navigation"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-900 shadow-sm transition hover:bg-(--teal-soft) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--teal) sm:hidden"
+          >
+            <span className="sr-only">Toggle navigation</span>
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              {menuOpen ? (
+                <>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </>
+              ) : (
+                <>
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </>
+              )}
+            </svg>
+          </button>
+
+          <nav
+            id="primary-navigation"
+            aria-label="Primary navigation"
+            className="hidden flex-wrap items-center gap-2 text-(--teal) underline-indicators sm:flex sm:gap-3"
+          >
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                aria-selected={link.active}
+                href={link.href}
+                className="inline-flex rounded-lg items-center gap-2 px-3 py-2 text-sm font-medium transition sm:px-3.5"
               >
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" strokeLinecap="round" />
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" strokeLinecap="round" />
-                <path d="M8 7h8M8 11h6" strokeLinecap="round" />
-              </svg>
-              My Reflections
-            </Link>
-            <Link
-              href="/dashboard"
-              className={`focus-visible:focus-ring inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition sm:px-3.5 ${
-                isDashboard
-                  ? "bg-[var(--teal-soft)] text-[var(--teal)] ring-1 ring-[var(--teal)]/25"
-                  : "text-slate-600 hover:bg-slate-100/80 hover:text-[var(--teal)] ring-1 ring-[var(--teal)]/25"
-              }`}
-            >
-              <svg
-                className="h-4 w-4 shrink-0 opacity-80"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden
-              >
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M9 22V12h6v10" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Dashboard
-            </Link>
+                {link.label}
+              </Link>
+            ))}
           </nav>
+
           <div
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--teal)] text-sm font-semibold text-white"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-(--teal) text-sm font-semibold text-white"
             title="Profile"
             aria-hidden
           >
             M
           </div>
         </div>
+      </div>
+
+      <div className={`${menuOpen ? "block" : "hidden"} sm:hidden border-t border-slate-200 bg-white/95 px-4 py-4 shadow-[0_18px_52px_-28px_rgba(31,41,59,0.35)] backdrop-blur`}>
+        <nav className="flex flex-col gap-2 text-sm font-medium text-slate-900">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              className="rounded-2xl px-4 py-3 transition hover:bg-(--teal-soft)"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </header>
   );

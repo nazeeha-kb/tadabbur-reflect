@@ -80,12 +80,12 @@ export default function Home() {
   return (
     <div className="min-h-screen relative">
       <SiteHeader />
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 sm:gap-20 sm:px-6 relative z-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-8 pb-16 sm:gap-20 sm:px-6 relative z-10">
         <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden pb-8 sm:pb-10 pt-30 sm:pt-35">
           {/* Decorative */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -z-10 -top-24 left-[8%] h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,rgba(31,107,113,0.2),rgba(31,107,113,0)_70%)] blur-2xl"
+            className="pointer-events-none absolute -z-10 -top-24 left-[8%] h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,rgba(31,107,113,0.2),rgba(31,107,113,0)_70%)] blur-2xl md:block hidden"
           />
           <div
             aria-hidden
@@ -157,9 +157,9 @@ export default function Home() {
                     key={item.label}
                     type="button"
                     onClick={() => handleExploreCard(item.query)}
-                    className="flex flex-col items-center rounded-3xl border border-[var(--border)] bg-white px-4 py-6 text-center transition hover:border-[var(--teal)]/35 hover:shadow-md focus-visible:focus-ring"
+                    className={`flex flex-col items-center rounded-3xl border border-[var(--border)] bg-white px-4 py-6 text-center transition hover:border-[var(--teal)]/35 hover:shadow-md focus-visible:focus-ring ${item.emotionText}`}
                   >
-                    <span className={`flex h-14 w-14 items-center justify-center rounded-full ${item.emotionBg} ${item.emotionText}`}>
+                    <span className={`flex h-14 w-14 items-center justify-center rounded-full ${item.emotionBg}`}>
                       <Icon className="h-7 w-7" />
                     </span>
                     <span className="mt-4 font-serif text-base">{item.label}</span>
@@ -171,7 +171,7 @@ export default function Home() {
         </section>
 
         {/* How It works section */}
-        <section className="text-center mt-10" aria-labelledby="how-heading">
+        <section className="flex flex-col items-center justify-center text-center mt-10" aria-labelledby="how-heading">
           <h2
             id="how-heading"
             className="font-serif text-3xl font-bold tracking-[0.12em] text-[#2D4F4F] sm:text-[2rem]"

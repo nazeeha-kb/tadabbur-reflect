@@ -1,4 +1,4 @@
-import { Amiri, Cormorant_Garamond, Manrope, Patrick_Hand } from "next/font/google";
+import { Amiri, Cormorant_Garamond, Manrope, Patrick_Hand, Instrument_Serif } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -7,6 +7,13 @@ const headingFont = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
   style: ["normal", "italic"],
+});
+
+const numberFont = Instrument_Serif({
+  variable: "--number-font",
+  subsets: ["latin"],
+  weight: ["400"],
+  // style: ["normal", "italic"],
 });
 
 const bodyFont = Manrope({
@@ -38,7 +45,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${headingFont.variable} ${bodyFont.variable} ${arabicFont.variable} ${writingFont.variable} h-full antialiased`}
+      className={`${headingFont.variable} ${bodyFont.variable} ${arabicFont.variable} ${writingFont.variable} ${numberFont.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-stone-50 text-slate-900">
         {children}

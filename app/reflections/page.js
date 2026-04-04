@@ -134,7 +134,7 @@ export default function ReflectionsPage() {
         onConfirm={confirmDeleteReflection}
       />
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-5 sm:px-6 pt-20">
+      <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6 pt-20">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-5xl text-[var(--teal)]">My Reflections</h1>

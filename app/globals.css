@@ -23,6 +23,44 @@
   --font-sans: var(--font-body);
 }
 
+@theme {
+  --font-heading: var(--font-heading);
+  --font-number: var(--font-number);
+}
+
+@layer utilities {
+  .underline-indicators>* {
+    @apply flex flex-col
+  }
+
+  .underline-indicators>*::after {
+    content: "";
+    @apply w-full h-[1.5px] bg-(--teal) scale-0 transition-transform duration-500;
+  }
+
+  .underline-indicators>*:hover::after,
+  .underline-indicators>*:focus::after {
+    @apply scale-100;
+  }
+
+  .underline-indicators>*[aria-selected="true"]::after {
+    @apply scale-100
+  }
+}
+
+@layer components {
+  /* Dashboard Card */
+  .dashboard-card {
+    @apply  p-6 sm:col-span-6 col-span-full rounded-3xl flex flex-col justify-center items-center text-center gap-2 md:min-h-50 min-h-20;
+  }
+  .dashboard-card small {
+    @apply text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--peach)];
+  }
+  .dashboard-card__number {
+    @apply  md:text-8xl text-5xl font-serif tabular-nums text-[var(--teal)] -mt-2;
+  }
+}
+
 .reflection-writing {
   font-family: var(--font-writing), var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 1.0625rem;

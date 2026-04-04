@@ -113,9 +113,10 @@ export default function ReflectionDetailPage() {
           ))}
         </section>
 
+        {/* Reflection section */}
         <section className="mt-12 rounded-3xl bg-white/60 p-6 sm:p-8">
           <h2 className="text-3xl text-slate-800">Edit reflection</h2>
-          <div className="mt-6 space-y-4">
+          <div className="mt-6 space-y-8">
             <label htmlFor="edit-title" className="text-sm font-medium text-slate-700">
               Title (optional)
             </label>
