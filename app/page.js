@@ -4,130 +4,26 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 import { SearchIcon } from "@/components/icons";
+// Emotion icons
+import { HeartBreakIcon } from "@phosphor-icons/react";
+import { CloudRainIcon } from "@phosphor-icons/react";
+import { SunDimIcon } from "@phosphor-icons/react";
+import { PlantIcon } from "@phosphor-icons/react";
+import { WindIcon } from "@phosphor-icons/react";
+import { MoonStarsIcon } from "@phosphor-icons/react";
+// how it work - icons
+import { InfinityIcon } from "@phosphor-icons/react";
+import { NoteIcon } from "@phosphor-icons/react";
+import { PenIcon } from "@phosphor-icons/react";
 
-function IconInfinity({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 40 40" fill="none" aria-hidden>
-      <circle cx="15" cy="20" r="6.5" stroke="currentColor" strokeWidth="1.75" />
-      <circle cx="25" cy="20" r="6.5" stroke="currentColor" strokeWidth="1.75" />
-    </svg>
-  );
-}
-
-function IconDocument({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 40 40" fill="none" aria-hidden>
-      <path
-        d="M10 8h12l6 6v18a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2z"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
-      <path d="M22 8v8h6" stroke="currentColor" strokeWidth="1.75" strokeLinejoin="round" />
-      <path d="M12 24h16M12 29h10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconPen({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 40 40" fill="none" aria-hidden>
-      <path
-        d="M22 9l9 9-14 14H8v-16L22 9z"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
-      <path d="M18 13l9 9" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconSadness({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
-      <path
-        d="M12 28c2 4 6 6 12 6s10-2 12-6M10 18c0-4 4-8 14-8s14 4 14 8"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-      />
-      <path d="M18 34v4M24 36v4M30 34v4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconGrief({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
-      <path
-        d="M24 38c-8-6-14-14-14-22a10 10 0 0 1 20 0c0 8-6 16-14 22z"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
-      <path d="M18 20l4 4M26 20l-4 4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconGratitude({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
-      <circle cx="24" cy="24" r="10" stroke="currentColor" strokeWidth="1.75" />
-      <path d="M24 14v-4M24 38v-4M34 24h4M10 24h4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconHope({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
-      <path
-        d="M24 40c-6-4-10-10-10-18 0-6 4-10 10-10s10 4 10 10c0 8-4 14-10 18z"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
-      <path d="M24 22v10M20 26h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconAnxiety({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
-      <path
-        d="M8 20c4-2 8 2 12 0s8-2 12 0 8-2 12 0M8 28c4-2 8 2 12 0s8-2 12 0 8-2 12 0M8 36c4-2 8 2 12 0s8-2 12 0 8-2 12 0"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function IconPeace({ className }) {
-  return (
-    <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden>
-      <path
-        d="M28 12a8 8 0 1 1-8 16 8 8 0 0 1 8-16z"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
-      <path d="M14 18l2 2M32 18l2 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 const EXPLORE_BY_EMOTION = [
-  { label: "Sadness", query: "sadness sorrow comfort healing", Icon: IconSadness },
-  { label: "Grief", query: "grief loss patience comfort", Icon: IconGrief },
-  { label: "Gratitude", query: "gratitude family blessings rizq love", Icon: IconGratitude },
-  { label: "Hope", query: "hope mercy ease after hardship", Icon: IconHope },
-  { label: "Anxiety", query: "anxiety worry peace of heart trust", Icon: IconAnxiety },
-  { label: "Peace", query: "peace tranquility heart contentment", Icon: IconPeace },
+  { label: "Sadness", query: "sadness sorrow comfort healing", Icon: CloudRainIcon, emotionBg: "bg-[#F2F6F2]", emotionText: "text-[var(--teal)]" },
+  { label: "Grief", query: "grief loss patience comfort", Icon: HeartBreakIcon, emotionBg: "bg-[#FFF2EB]", emotionText: "text-[#b85c3e]" },
+  { label: "Gratitude", query: "gratitude family blessings rizq love", Icon: SunDimIcon, emotionBg: "bg-[#F2F6F2]", emotionText: "text-[var(--teal)]" },
+  { label: "Hope", query: "hope mercy ease after hardship", Icon: PlantIcon, emotionBg: "bg-[#FFF2EB]", emotionText: "text-[#b85c3e]" },
+  { label: "Anxiety", query: "anxiety worry peace of heart trust", Icon: WindIcon, emotionBg: "bg-[#F2F6F2]", emotionText: "text-[var(--teal)]" },
+  { label: "Peace", query: "peace tranquility heart contentment", Icon: MoonStarsIcon, emotionBg: "bg-[#FFF2EB]", emotionText: "text-[#b85c3e]" },
 ];
 
 const HOW_STEPS = [
@@ -135,31 +31,31 @@ const HOW_STEPS = [
     step: "STEP 01",
     title: "Type your emotion",
     body: "Share what's on your heart. Whether it's anxiety, gratitude, or seeking hope, we are here to listen.",
-    cardBorder: "border-[#EBF5F5]",
+    cardBorder: "border-[#8FC4C4]",
     cardBg: "bg-[#EBF5F5]",
     stepColor: "text-[#3d6666]",
     iconColor: "text-[#2D4F4F]",
-    Icon: IconInfinity,
+    Icon: InfinityIcon,
   },
   {
     step: "STEP 02",
     title: "Read curated ayahs",
     body: "Discover verses specifically selected to resonate with your current state of being and provide guidance.",
-    cardBorder: "border-[#FFF2EB]",
+    cardBorder: "border-[#B79F92]",
     cardBg: "bg-[#FFF2EB]",
     stepColor: "text-[#b85c3e]",
     iconColor: "text-[#c45c3e]",
-    Icon: IconDocument,
+    Icon: NoteIcon,
   },
   {
     step: "STEP 03",
     title: "Reflect and write",
     body: "Deepen your connection by journaling your personal reflections and finding how the divine word applies to you.",
-    cardBorder: "border-[#F2F6F2]",
+    cardBorder: "border-[#9AC09A]",
     cardBg: "bg-[#F2F6F2]",
     stepColor: "text-[#4a6b58]",
     iconColor: "text-[#3d6b58]",
-    Icon: IconPen,
+    Icon: PenIcon,
   },
 ];
 
@@ -182,22 +78,25 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 sm:gap-20 sm:px-6">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 sm:gap-20 sm:px-6 relative z-10">
         <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden pb-8 sm:pb-10 pt-30 sm:pt-35">
+          {/* Decorative */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-24 left-[8%] h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,rgba(31,107,113,0.2),rgba(31,107,113,0)_70%)] blur-2xl"
+            className="pointer-events-none absolute -z-10 -top-24 left-[8%] h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,rgba(31,107,113,0.2),rgba(31,107,113,0)_70%)] blur-2xl"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute right-[6%] top-8 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(212,141,98,0.18),rgba(212,141,98,0)_70%)] blur-2xl"
+            className="pointer-events-none absolute -z-10 right-[6%] top-8 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(212,141,98,0.18),rgba(212,141,98,0)_70%)] blur-2xl"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute bottom-0 left-1/2 h-52 w-[48rem] max-w-[92vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(31,107,113,0.1),rgba(31,107,113,0)_72%)] blur-xl"
+            className="pointer-events-none absolute -z-10 bottom-0 left-1/2 h-52 w-[48rem] max-w-[92vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(31,107,113,0.1),rgba(31,107,113,0)_72%)] blur-xl"
           />
+
+          {/* Hero section */}
           <div className="mx-auto flex w-full max-w-3xl flex-col items-center px-4 text-center sm:px-6">
             <p className="rounded-full bg-[var(--peach-soft)] px-4 py-1 text-xs font-semibold tracking-[0.2em] text-[var(--peach)] uppercase">
               A Sanctuary For The Soul
@@ -238,7 +137,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="w-full text-left" aria-labelledby="explore-heading">
+
+        {/* Explore by Emotions Section */}
+
+        <section className="w-full text-left mt-10" aria-labelledby="explore-heading">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <h2 id="explore-heading" className="font-serif text-3xl text-[var(--teal)] sm:text-4xl">
               Explore by Emotion
@@ -247,6 +149,7 @@ export default function Home() {
               Choose a state of heart to discover verses tailored for your current journey.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+              {/* Explore by emotions */}
               {EXPLORE_BY_EMOTION.map((item) => {
                 const Icon = item.Icon;
                 return (
@@ -254,12 +157,12 @@ export default function Home() {
                     key={item.label}
                     type="button"
                     onClick={() => handleExploreCard(item.query)}
-                    className="flex flex-col items-center rounded-3xl border border-[var(--border)] bg-[#f4f1ea]/90 px-4 py-6 text-center transition hover:border-[var(--teal)]/35 hover:shadow-md focus-visible:focus-ring"
+                    className="flex flex-col items-center rounded-3xl border border-[var(--border)] bg-white px-4 py-6 text-center transition hover:border-[var(--teal)]/35 hover:shadow-md focus-visible:focus-ring"
                   >
-                    <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#e8e2d6] text-[var(--teal)]">
+                    <span className={`flex h-14 w-14 items-center justify-center rounded-full ${item.emotionBg} ${item.emotionText}`}>
                       <Icon className="h-7 w-7" />
                     </span>
-                    <span className="mt-4 font-serif text-base text-[var(--teal)]">{item.label}</span>
+                    <span className="mt-4 font-serif text-base">{item.label}</span>
                   </button>
                 );
               })}
@@ -267,7 +170,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="text-center" aria-labelledby="how-heading">
+        {/* How It works section */}
+        <section className="text-center mt-10" aria-labelledby="how-heading">
           <h2
             id="how-heading"
             className="font-serif text-3xl font-bold tracking-[0.12em] text-[#2D4F4F] sm:text-[2rem]"
@@ -300,7 +204,7 @@ export default function Home() {
             })}
           </div>
         </section>
-      </main>
-    </div>
+      </div>
+    </div >
   );
 }

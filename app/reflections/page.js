@@ -9,6 +9,7 @@ import { SearchIcon, SlidersIcon } from "@/components/icons";
 import { formatVerseCitation } from "@/lib/quran/surahNames";
 import { deleteReflection, getStoredReflections } from "@/lib/storage/reflections";
 import { toast } from "sonner";
+import { BookOpenTextIcon } from "@phosphor-icons/react";
 
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString(undefined, {
@@ -141,12 +142,6 @@ export default function ReflectionsPage() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
-              href="/dashboard"
-              className="inline-flex h-11 shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-white px-5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:focus-ring"
-            >
-              Dashboard
-            </Link>
-            <Link
               href="/"
               className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-[var(--teal)] px-5 text-sm font-semibold text-white transition hover:brightness-105 focus-visible:focus-ring"
             >
@@ -267,7 +262,7 @@ export default function ReflectionsPage() {
             {filtered.map((item) => (
               <article
                 key={item.id}
-                className="surface-card group p-6 text-left transition hover:border-[var(--teal)] hover:shadow-md"
+                className="surface-card group p-6 text-left transition hover:border-[var(--teal)] hover:shadow-md flex flex-col"
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-xs leading-snug text-[var(--peach)]">
@@ -292,13 +287,40 @@ export default function ReflectionsPage() {
                     </button>
                   </div>
                 </div>
-                <Link href={`/reflections/${item.id}`} className="block focus-visible:focus-ring">
-                  <h2 className="mt-4 text-2xl text-[var(--teal)] group-hover:underline">
+                {(item.ayahs || []).length > 0 ? (
+                    <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Verses in this reflection">
+                      {(item.ayahs || []).map((ayah, idx) => {
+                        const label = ayahCapsuleLabel(ayah);
+                        if (!label) return null;
+                        // Ayah
+                        return (
+                          <li
+                            key={ayah.id ?? ayah.verseKey ?? idx}
+                            // className="rounded-full border border-[var(--teal)]/25 bg-[var(--teal-soft)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--teal)]"
+                            className="text-[var(--peach)] font-bold text-sm items-center flex gap-2" 
+                          >
+                            <BookOpenTextIcon/>
+                            <span>{label}</span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : null}
+                <Link href={`/reflections/${item.id}`} className="focus-visible:focus-ring flex flex-col flex-1 gap-2 justify-between">
+                <div className="mt-4 flex flex-col gap-2">
+                {item.title? <h2 className="text-2xl text-[var(--teal)] group-hover:underline">
+                  {/* Title */}
                     {item.title || "Untitled Reflection"}
-                  </h2>
+                  </h2> : "" 
+                }
+                  {/* Reflection */}
+                  <div className="line-clamp-4 overflow-hidden text-sm">
+                    <MarkdownContent>{item.reflectionText || ""}</MarkdownContent>
+                  </div>
+                </div>
                   {(item.tags || []).length > 0 ? (
-                    <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Your tags">
-                      {(item.tags || []).map((t) => (
+                    <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Your tags">
+                      {(item.tags || []).slice(0, 4).map((t) => (
                         <li
                           key={t}
                           className="rounded-full border border-[var(--border)] bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-600"
@@ -306,25 +328,6 @@ export default function ReflectionsPage() {
                           {t}
                         </li>
                       ))}
-                    </ul>
-                  ) : null}
-                  <div className="mt-3 line-clamp-4 overflow-hidden text-sm">
-                    <MarkdownContent>{item.reflectionText || ""}</MarkdownContent>
-                  </div>
-                  {(item.ayahs || []).length > 0 ? (
-                    <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Verses in this reflection">
-                      {(item.ayahs || []).map((ayah, idx) => {
-                        const label = ayahCapsuleLabel(ayah);
-                        if (!label) return null;
-                        return (
-                          <li
-                            key={ayah.id ?? ayah.verseKey ?? idx}
-                            className="rounded-full border border-[var(--teal)]/25 bg-[var(--teal-soft)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--teal)]"
-                          >
-                            {label}
-                          </li>
-                        );
-                      })}
                     </ul>
                   ) : null}
                 </Link>
