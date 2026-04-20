@@ -24,8 +24,8 @@ export default function SiteHeader() {
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <div className="flex items-center gap-3">
           <Link href="/" className="inline-flex items-center gap-3 font-serif text-lg font-semibold text-(--teal)">
-            <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="24" fill="#2F6F6F" />
+            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="20" fill="#2F6F6F" />
               <text x="50%" y="55%" textAnchor="middle" fill="white" fontSize="20" fontFamily="serif" dy=".3em">
                 T
               </text>
