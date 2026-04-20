@@ -71,13 +71,13 @@ export default function SiteHeader() {
             ))}
           </nav>
 
-          <div
+          {/* <div
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-(--teal) text-sm font-semibold text-white"
             title="Profile"
             aria-hidden
           >
             M
-          </div>
+          </div> */}
         </div>
       </div>
 
