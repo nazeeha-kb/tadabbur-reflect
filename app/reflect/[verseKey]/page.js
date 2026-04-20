@@ -254,8 +254,6 @@ export default function ReflectAyahPage() {
               <RichReflectionEditor
                 id="edit-reflection"
                 value={reflectionText}
-                createdAt={createdAt}
-                updatedAt={updatedAt}
                 onChange={setReflectionText}
                 rows={8}
                 placeholder="Begin your reflection here"
