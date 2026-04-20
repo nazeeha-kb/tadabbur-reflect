@@ -16,6 +16,39 @@ export default function AyahAudioButton({ verseKey, recitationId = 7 }) {
     return () => audio.removeEventListener("ended", onEnded);
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+    async function prefetchAudio() {
+      if (resolvedUrl) return;
+      try {
+        const res = await fetch(
+          `/api/recite?verseKey=${encodeURIComponent(verseKey)}&recitationId=${encodeURIComponent(String(recitationId))}`,
+          { cache: "no-store" },
+        );
+        const payload = await res.json().catch(() => ({}));
+        if (!res.ok) return;
+        const url = payload?.audioUrl;
+        if (typeof url !== "string" || !url.trim()) return;
+        const resolved = { url, fallbackUrl: payload?.fallbackUrl };
+        if (cancelled) return;
+        setResolvedUrl(resolved);
+        const audio = audioRef.current;
+        if (audio && audio.src !== url) {
+          audio.src = url;
+          audio.preload = "metadata";
+          audio.load();
+        }
+      } catch {
+        /* ignore prefetch errors */
+      }
+    }
+
+    prefetchAudio();
+    return () => {
+      cancelled = true;
+    };
+  }, [verseKey, recitationId, resolvedUrl]);
+
   async function ensureResolvedUrl() {
     if (resolvedUrl) return resolvedUrl;
     const res = await fetch(
@@ -32,6 +65,12 @@ export default function AyahAudioButton({ verseKey, recitationId = 7 }) {
     }
     const resolved = { url, fallbackUrl: payload?.fallbackUrl };
     setResolvedUrl(resolved);
+    const audio = audioRef.current;
+    if (audio && audio.src !== url) {
+      audio.src = url;
+      audio.preload = "metadata";
+      audio.load();
+    }
     return resolved;
   }
 
@@ -84,7 +123,7 @@ export default function AyahAudioButton({ verseKey, recitationId = 7 }) {
           <span className="ml-0.5 text-[11px] font-semibold leading-none">▶</span>
         )}
       </button>
-      <audio ref={audioRef} preload="none" crossOrigin="anonymous" />
+      <audio ref={audioRef} preload="metadata" crossOrigin="anonymous" />
     </>
   );
 }

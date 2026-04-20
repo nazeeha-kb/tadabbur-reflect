@@ -6,8 +6,12 @@ import Link from "next/link";
 import AyahAudioButton from "@/components/AyahAudioButton";
 import SiteHeader from "@/components/SiteHeader";
 import TagInput from "@/components/TagInput";
+import TafseerSourceSelect from "@/components/TafseerSourceSelect";
+import RichReflectionEditor from "@/components/RichReflectionEditor";
+import { useUISettings } from "@/components/UISettingsProvider";
 import { formatVerseCitation } from "@/lib/quran/surahNames";
 import { saveReflection } from "@/lib/storage/reflections";
+import { getTafseerSourceMeta } from "@/lib/tafseerSources";
 import { toast } from "sonner";
 
 export default function ReflectAyahPage() {
@@ -26,6 +30,15 @@ export default function ReflectAyahPage() {
   }, [params]);
 
   const emotionQuery = useMemo(() => searchParams.get("q")?.trim() || "", [searchParams]);
+  const queryTafseerSource = useMemo(() => searchParams.get("tafseer")?.trim() || "", [searchParams]);
+  const { tafseerSource, setTafseerSource } = useUISettings();
+  const sourceMeta = useMemo(() => getTafseerSourceMeta(tafseerSource), [tafseerSource]);
+
+  useEffect(() => {
+    if (queryTafseerSource && queryTafseerSource !== tafseerSource) {
+      setTafseerSource(queryTafseerSource);
+    }
+  }, [queryTafseerSource, setTafseerSource, tafseerSource]);
 
   const [ayah, setAyah] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,7 +66,10 @@ export default function ReflectAyahPage() {
         setLoading(true);
         setError("");
         if (emotionQuery) {
-          const listRes = await fetch(`/api/ayahs?q=${encodeURIComponent(emotionQuery)}`, { cache: "no-store" });
+          const listRes = await fetch(
+            `/api/ayahs?q=${encodeURIComponent(emotionQuery)}&tafseer=${encodeURIComponent(tafseerSource)}`,
+            { cache: "no-store" },
+          );
           const listPayload = await listRes.json();
           if (listRes.ok) {
             const found = (listPayload?.ayahs || []).find((a) => a?.verseKey === verseKey);
@@ -64,7 +80,10 @@ export default function ReflectAyahPage() {
           }
         }
 
-        const res = await fetch(`/api/ayah?verseKey=${encodeURIComponent(verseKey)}`, { cache: "no-store" });
+        const res = await fetch(
+          `/api/ayah?verseKey=${encodeURIComponent(verseKey)}&tafseer=${encodeURIComponent(tafseerSource)}`,
+          { cache: "no-store" },
+        );
         const payload = await res.json();
         if (!res.ok) throw new Error(payload.message || "Unable to fetch verse.");
         if (alive) setAyah(payload.ayah || null);
@@ -78,7 +97,7 @@ export default function ReflectAyahPage() {
     return () => {
       alive = false;
     };
-  }, [router, verseKey, emotionQuery]);
+  }, [router, verseKey, emotionQuery, tafseerSource]);
 
   useEffect(() => {
     if (!ayah || didPrefillTags.current) return;
@@ -157,7 +176,11 @@ export default function ReflectAyahPage() {
       <main className="relative mx-auto w-full max-w-5xl px-4 pb-16 pt-4 sm:px-6">
         <div className="flex items-center justify-between gap-4">
           <Link
-            href={emotionQuery ? `/reflect?q=${encodeURIComponent(emotionQuery)}` : "/"}
+            href={
+              emotionQuery
+                ? `/reflect?q=${encodeURIComponent(emotionQuery)}&tafseer=${encodeURIComponent(tafseerSource)}`
+                : "/"
+            }
             className="text-sm font-medium text-[var(--teal)] hover:underline"
           >
             ← Back
@@ -177,12 +200,7 @@ export default function ReflectAyahPage() {
               <p className="text-xs font-semibold tracking-wide uppercase text-[var(--peach)]">
                 {formatVerseCitation(ayah)}
               </p>
-              <p
-                dir="rtl"
-                lang="ar"
-                style={{ fontFamily: "var(--font-arabic), serif" }}
-                className="mt-5 text-right text-3xl leading-[1.85] text-[#0f4f5f] sm:text-[2rem]"
-              >
+              <p className="mt-5 text-right text-3xl leading-[1.85] text-[#0f4f5f] sm:text-[2rem]">
                 {ayah.arabicText}
               </p>
               {ayah.translation ? (
@@ -190,7 +208,15 @@ export default function ReflectAyahPage() {
               ) : null}
               {ayah.tafseer?.trim() ? (
                 <div className="mt-5 rounded-xl border-l-4 border-[var(--teal)] bg-slate-50 px-4 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Context and tafsir</p>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Context and tafsir
+                    </p>
+                    <TafseerSourceSelect compact />
+                  </div>
+                  <p className="mt-2 text-xs text-slate-500">
+                    Current source: {sourceMeta.label}
+                  </p>
                   <p className="mt-2 text-sm leading-relaxed text-slate-700">{ayah.tafseer}</p>
                 </div>
               ) : null}
@@ -198,47 +224,58 @@ export default function ReflectAyahPage() {
           ) : null}
         </section>
 
-        <section className="mt-10 rounded-3xl bg-white/60 p-6 sm:p-8">
-          <h2 className="text-3xl text-slate-800">Reflect</h2>
-          <div className="mt-6 space-y-4">
-            <label htmlFor="title" className="text-sm font-medium text-slate-700">
+
+        {/* Reflection section */}
+        <section className="paper-bg mt-12 rounded-3xl p-6 sm:p-8 border border-[#d2c8b9] bg-[#fdfbf7]">
+          <div className="w-full flex justify-between">
+            <h2 className="text-3xl text-slate-700 font-semibold">Edit reflection</h2>
+          </div>
+          <div className="mt-6 space-y-8">
+            <label htmlFor="edit-title" className="text-xs tracking-wider font-medium text-slate-600 uppercase">
               Title (optional)
             </label>
             <input
-              id="title"
+              id="edit-title"
               name="title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="focus-ring w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm"
-              placeholder="A short title for this reflection"
+              onChange={(event) => setTitle(event.target.value)}
+              placeholder="Give your reflection a title"
+              className="w-full border-b-2 border-[var(--border)] py-3 text-xl "
             />
-            <label htmlFor="tags" className="text-sm font-medium text-slate-700">
-              Tags (optional)
+            <label htmlFor="edit-tags" className="text-xs tracking-wider font-medium text-slate-600 uppercase">
+              Tags
             </label>
-            <TagInput id="tags" tags={tags} onChange={setTags} placeholder="e.g. gratitude, patience — press Enter" />
-            <label htmlFor="reflection" className="text-sm font-medium text-slate-700">
+            <TagInput id="edit-tags" tags={tags} onChange={setTags} placeholder="Add tags, press Enter" />
+            <label htmlFor="edit-reflection" className="text-xs tracking-wider font-medium text-slate-600 uppercase">
               Your reflection
             </label>
-            <p className="text-xs text-slate-500">
-              Markdown supported: **bold**, *italic*, lists, and &gt; quotes.
-            </p>
-            <textarea
-              id="reflection"
-              name="reflection"
-              value={reflectionText}
-              onChange={(e) => setReflectionText(e.target.value)}
-              rows={10}
-              className="focus-ring reflection-writing w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3"
-              placeholder="Write your thoughts, what touched your heart, and what action you want to take."
-            />
-            <div className="flex justify-end">
+            {/* Reflection box */}
+            <div>
+              <RichReflectionEditor
+                id="edit-reflection"
+                value={reflectionText}
+                createdAt={createdAt}
+                updatedAt={updatedAt}
+                onChange={setReflectionText}
+                rows={8}
+                placeholder="Begin your reflection here"
+              />
+
+            </div>
+            <div className="flex justify-end gap-3">
+              <Link
+                href="/reflections"
+                className="inline-flex items-center rounded-full border border-[var(--border)] px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-white"
+              >
+                Cancel
+              </Link>
               <button
                 type="button"
                 onClick={handleSave}
-                disabled={!reflectionText.trim() || !ayah || saving}
+                disabled={!reflectionText.trim()}
                 className="rounded-full bg-[var(--teal)] px-6 py-3 text-sm font-semibold text-white transition enabled:hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:focus-ring"
               >
-                {saving ? "Saving…" : "Save Reflection"}
+                Save changes
               </button>
             </div>
           </div>

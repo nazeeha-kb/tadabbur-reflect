@@ -86,7 +86,7 @@ export default function DashboardPage() {
           </section>
           <section className="surface-card dashboard-card gap-6">
             <small>Inner landscape</small>
-            <p className="font-serif tabular-nums font-light text-[var(--teal)] md:text-4xl text-2xl">
+            <div className="font-serif tabular-nums font-light text-[var(--teal)] md:text-4xl text-2xl">
               {themeWord ? (
                 <div className="flex flex-col">
                   You often reflect on
@@ -95,20 +95,19 @@ export default function DashboardPage() {
               ) : (
                 "Your themes will emerge as you journal and tag your reflections."
               )}
-            </p>
+            </div>
           </section>
           <section className="surface-card dashboard-card gap-6">
             <small>Recency</small>
-            <p className="font-serif tabular-nums font-light text-[var(--teal)] md:text-4xl text-2xl">
+            <div className="font-serif tabular-nums font-light text-[var(--teal)] md:text-4xl text-2xl">
               {lastIso ? (
                 <div className="flex flex-col">
-                  Last reflection:{" "}
-                  <span className="font-serif text-slate-500">{formatInsightMonthDay(lastIso)}</span>
+                  Last reflection: <span className="font-serif text-slate-500">{formatInsightMonthDay(lastIso)}</span>
                 </div>
               ) : (
                 "No reflections yet."
               )}
-            </p>
+            </div>
           </section>
         </div>
         {/* 

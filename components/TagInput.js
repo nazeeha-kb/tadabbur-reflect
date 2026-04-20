@@ -65,7 +65,7 @@ export default function TagInput({ id, tags, onChange, placeholder = "Add a tag,
         onBlur={() => {
           if (draft.trim()) commit(draft);
         }}
-        className="focus-ring w-full rounded-xl border border-[var(--border)] bg-white px-4 py-3 text-sm"
+        className="border-[var-border] border-[0.4px] w-full rounded-xl bg-white px-4 py-3 text-sm"
         placeholder={placeholder}
         autoComplete="off"
       />

@@ -10,9 +10,11 @@ const compat = new FlatCompat({
 });
 
 /** Extends legacy `next/core-web-vitals` into flat config (works on Vercel + local). */
-export default [
+const config = [
   ...compat.extends("next/core-web-vitals"),
   {
     ignores: [".next/**", "out/**", "build/**", "next-env.d.ts"],
   },
 ];
+
+export default config;

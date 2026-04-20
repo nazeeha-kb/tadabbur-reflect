@@ -6,10 +6,10 @@ function AyahCardSkeleton() {
   return (
     <article className="surface-card p-6 sm:p-8" aria-hidden>
       <SkeletonBar className="h-3 w-36" />
-      <div className="mt-6 space-y-3" dir="rtl">
-        <SkeletonBar className="mr-0 ml-auto h-4 w-[92%] max-w-xl" />
-        <SkeletonBar className="mr-0 ml-auto h-4 w-[78%] max-w-lg" />
-        <SkeletonBar className="mr-0 ml-auto h-4 w-[85%] max-w-2xl" />
+      <div className="mt-6 space-y-3">
+        <SkeletonBar className="h-4 w-[92%] max-w-xl" />
+        <SkeletonBar className="h-4 w-[78%] max-w-lg" />
+        <SkeletonBar className="h-4 w-[85%] max-w-2xl" />
       </div>
       <div className="mt-7 space-y-2.5">
         <SkeletonBar className="h-4 w-full" />

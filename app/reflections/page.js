@@ -134,7 +134,7 @@ export default function ReflectionsPage() {
         onConfirm={confirmDeleteReflection}
       />
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6 pt-20">
+      <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-20 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-5xl text-[var(--teal)]">My Reflections</h1>
@@ -262,7 +262,7 @@ export default function ReflectionsPage() {
             {filtered.map((item) => (
               <article
                 key={item.id}
-                className="surface-card group p-6 text-left transition hover:border-[var(--teal)] hover:shadow-md flex flex-col"
+                className="group rounded-3xl border border-[var(--border)] bg-[linear-gradient(180deg,#ffffff_0%,#fbfaf8_100%)] p-6 text-left shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] transition hover:border-[var(--teal)]/40 hover:shadow-md flex flex-col"
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-xs leading-snug text-[var(--peach)]">
@@ -317,6 +317,9 @@ export default function ReflectionsPage() {
                   <div className="line-clamp-4 overflow-hidden text-sm">
                     <MarkdownContent>{item.reflectionText || ""}</MarkdownContent>
                   </div>
+                  <p className="pt-2 text-xs text-slate-500">
+                    Edited on: {formatDate(item.updatedAt || item.createdAt)}
+                  </p>
                 </div>
                   {(item.tags || []).length > 0 ? (
                     <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Your tags">

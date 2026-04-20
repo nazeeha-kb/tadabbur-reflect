@@ -4,9 +4,10 @@ import { getAyahsByEmotion } from "@/lib/api/quran";
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q");
+  const tafseerSource = searchParams.get("tafseer");
 
   try {
-    const { ayahs, themes } = await getAyahsByEmotion(query);
+    const { ayahs, themes } = await getAyahsByEmotion(query, tafseerSource || undefined);
     return NextResponse.json({ ayahs, themes });
   } catch (error) {
     return NextResponse.json(

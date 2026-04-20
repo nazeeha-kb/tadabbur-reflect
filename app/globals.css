@@ -49,16 +49,27 @@
 }
 
 @layer components {
+
   /* Dashboard Card */
   .dashboard-card {
-    @apply  p-6 sm:col-span-6 col-span-full rounded-3xl flex flex-col justify-center items-center text-center gap-2 md:min-h-50 min-h-20;
+    @apply p-6 sm:col-span-6 col-span-full rounded-3xl flex flex-col justify-center items-center text-center gap-2 md:min-h-50 min-h-20;
   }
+
   .dashboard-card small {
     @apply text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--peach)];
   }
+
   .dashboard-card__number {
-    @apply  md:text-8xl text-5xl font-serif tabular-nums text-[var(--teal)] -mt-2;
+    @apply md:text-8xl text-5xl font-serif tabular-nums text-[var(--teal)] -mt-2;
   }
+}
+
+.paper-bg {
+  background-image: url("../public/natural-paper.png");
+}
+
+.reflection-page {
+  @apply w-full h-80 pl-12 mt-6 leading-[28px] text-[16px];
 }
 
 .reflection-writing {

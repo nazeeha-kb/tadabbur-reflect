@@ -3,27 +3,31 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUISettings } from "@/components/UISettingsProvider";
 
 export default function SiteHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useUISettings();
   const isHome = pathname === "/";
-  const isDashboard = pathname === "/dashboard";
+  const isProgress = pathname === "/progress";
   const isReflections = pathname === "/reflections" || pathname?.startsWith("/reflections/");
 
   const navLinks = [
-    { href: "/", label: "Home", active: isHome },
-    { href: "/reflections", label: "My Reflections", active: isReflections },
-    { href: "/dashboard", label: "Dashboard", active: isDashboard },
+    { href: "/", label: t("navHome"), active: isHome },
+    { href: "/reflections", label: t("navReflections"), active: isReflections },
+    { href: "/progress", label: t("navProgress"), active: isProgress },
   ];
 
   return (
     <header className="w-full border-b border-slate-200/90 bg-background">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <Link href="/" className="inline-flex items-center gap-2.5 font-serif text-lg font-semibold text-(--teal)">
-          <span className="inline-flex h-8 w-8 shrink-0 rounded-full bg-(--teal)" aria-hidden />
-          <span>Tadabbur</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/" className="inline-flex items-center gap-2.5 font-serif text-lg font-semibold text-(--teal)">
+            <span className="inline-flex h-8 w-8 shrink-0 rounded-full bg-(--teal)" aria-hidden />
+            <span>Tadabbur</span>
+          </Link>
+        </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <button

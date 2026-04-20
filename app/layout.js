@@ -1,5 +1,6 @@
-import { Amiri, Cormorant_Garamond, Manrope, Patrick_Hand, Instrument_Serif } from "next/font/google";
+import { Cormorant_Garamond, Inter, Patrick_Hand, Instrument_Serif } from "next/font/google";
 import { Toaster } from "sonner";
+import { UISettingsProvider } from "@/components/UISettingsProvider";
 import "./globals.css";
 
 const headingFont = Cormorant_Garamond({
@@ -16,15 +17,9 @@ const numberFont = Instrument_Serif({
   // style: ["normal", "italic"],
 });
 
-const bodyFont = Manrope({
+const bodyFont = Inter({
   variable: "--font-body",
   subsets: ["latin"],
-});
-
-const arabicFont = Amiri({
-  variable: "--font-arabic",
-  subsets: ["arabic", "latin"],
-  weight: ["400", "700"],
 });
 
 const writingFont = Patrick_Hand({
@@ -45,11 +40,13 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${headingFont.variable} ${bodyFont.variable} ${arabicFont.variable} ${writingFont.variable} ${numberFont.variable} h-full antialiased`}
+      className={`${headingFont.variable} ${bodyFont.variable} ${writingFont.variable} ${numberFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-stone-50 text-slate-900">
-        {children}
-        <Toaster position="bottom-right" richColors closeButton />
+      <body className="min-h-full overflow-x-hidden bg-stone-50 text-slate-900">
+        <UISettingsProvider>
+          {children}
+          <Toaster position="bottom-right" richColors closeButton />
+        </UISettingsProvider>
       </body>
     </html>
   );

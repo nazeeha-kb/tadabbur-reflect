@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 import { SearchIcon } from "@/components/icons";
+import TafseerSourceSelect from "@/components/TafseerSourceSelect";
+import { useUISettings } from "@/components/UISettingsProvider";
 // Emotion icons
 import { HeartBreakIcon } from "@phosphor-icons/react";
 import { CloudRainIcon } from "@phosphor-icons/react";
@@ -62,26 +64,27 @@ const HOW_STEPS = [
 export default function Home() {
   const [emotion, setEmotion] = useState("");
   const router = useRouter();
+  const { tafseerSource } = useUISettings();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const trimmed = emotion.trim();
     if (!trimmed) return;
-    router.push(`/reflect?q=${encodeURIComponent(trimmed)}`);
+    router.push(`/reflect?q=${encodeURIComponent(trimmed)}&tafseer=${encodeURIComponent(tafseerSource)}`);
   };
 
   const handleExploreCard = (query) => {
     const trimmed = query.trim();
     if (!trimmed) return;
     setEmotion(trimmed);
-    router.push(`/reflect?q=${encodeURIComponent(trimmed)}`);
+    router.push(`/reflect?q=${encodeURIComponent(trimmed)}&tafseer=${encodeURIComponent(tafseerSource)}`);
   };
 
   return (
     <div className="min-h-screen relative">
       <SiteHeader />
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 sm:gap-20 sm:px-6 relative z-10">
-        <section className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden pb-8 sm:pb-10 pt-30 sm:pt-35">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 sm:gap-20 sm:px-6 relative z-10 overflow-hidden">
+        <section className="relative overflow-hidden pb-8 sm:pb-10 pt-30 sm:pt-35">
           {/* Decorative */}
           <div
             aria-hidden
@@ -110,7 +113,7 @@ export default function Home() {
 
             <form
               onSubmit={handleSubmit}
-              className="mt-10 flex w-full max-w-2xl items-center gap-2 rounded-full border border-[var(--border)] bg-white py-1.5 pl-4 pr-1.5 shadow-md"
+              className="mt-10 flex w-full max-w-4xl flex-col items-stretch gap-3 rounded-3xl border border-[var(--border)] bg-white p-3 shadow-md sm:flex-row sm:items-center sm:rounded-full sm:py-1.5 sm:pl-4 sm:pr-1.5"
             >
               <label htmlFor="emotion" className="sr-only">
                 Describe how you feel
@@ -124,9 +127,10 @@ export default function Home() {
                 value={emotion}
                 onChange={(event) => setEmotion(event.target.value)}
                 placeholder="What is on your heart today?"
-                className=" h-11 min-w-0 flex-1 rounded-full border-0 px-1 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
+                className="h-11 min-w-0 flex-1 rounded-full border-0 px-1 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
                 required
               />
+              <TafseerSourceSelect compact className="w-full sm:w-auto" />
               <button
                 type="submit"
                 className="h-11 shrink-0 rounded-full bg-[var(--peach)] px-6 text-sm font-semibold text-white transition hover:brightness-105"
@@ -140,7 +144,7 @@ export default function Home() {
 
         {/* Explore by Emotions Section */}
 
-        <section className="w-full text-left mt-10" aria-labelledby="explore-heading">
+        <section className="w-full text-start mt-10" aria-labelledby="explore-heading">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <h2 id="explore-heading" className="font-serif text-3xl text-[var(--teal)] sm:text-4xl">
               Explore by Emotion

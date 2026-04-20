@@ -1,36 +1,162 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Inshirah: Quran Reflection App
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-15.2.6-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0.0-blue)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-First, run the development server:
+A modern, interactive web application that empowers Muslims to deepen their connection with the Quran through guided reflection, personalized insights, and progress tracking.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🌟 Problem Statement
+
+In today's fast-paced world, many Muslims struggle to maintain consistent Quran study and reflection. Traditional methods lack personalization, progress tracking, and interactive features that make spiritual growth engaging and sustainable.
+
+## 🚀 Solution
+
+Inshirah provides a seamless platform for Quran reflection with:
+- **Guided Verse Selection**: Intuitive interface for browsing and selecting verses
+- **Rich Reflection Editor**: Live markdown preview for thoughtful journaling
+- **Personalized Insights**: AI-powered emotion-based verse recommendations
+- **Progress Tracking**: Visual dashboards to monitor spiritual growth
+- **Tafseer Integration**: Multiple scholarly sources for deeper understanding
+
+## ✨ Key Features
+
+### 📖 Interactive Quran Browser
+- Browse surahs and verses with clean, responsive design
+- Audio recitation integration for immersive experience
+- Multiple tafseer sources for comprehensive understanding
+
+### ✍️ Rich Reflection Editor
+- Live markdown preview while writing
+- Tag system for organizing reflections by themes
+- Timestamped entries for tracking spiritual journey
+
+### 🎯 Personalized Recommendations
+- Emotion-based verse search using natural language processing
+- Smart suggestions based on reflection history
+- Thematic exploration through reflection tags
+
+### 📊 Progress Analytics
+- Visual progress tracking across surahs and verses
+- Achievement system for milestones
+- Statistics dashboard for reflection patterns
+
+### 🔐 Secure Authentication
+- OAuth integration with Quran Foundation API
+- Secure user sessions and data privacy
+- Cross-device synchronization
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15, React 19, Tailwind CSS 4
+- **Backend**: Next.js API Routes
+- **Database**: Local storage with future MongoDB integration
+- **Authentication**: Quran Foundation OAuth
+- **AI/NLP**: Compromise.js for natural language processing
+- **UI Components**: Custom components with Phosphor Icons
+- **Markdown**: React Markdown with remark-breaks
+
+## 📋 Prerequisites
+
+- Node.js >= 20.9.0
+- npm, yarn, pnpm, or bun
+
+## 🚀 Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/inshirah-quran-reflect-app.git
+   cd inshirah-quran-reflect-app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Configure your Quran Foundation API credentials and other settings.
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   ```
+
+5. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 📖 Usage
+
+### Getting Started
+1. **Sign In**: Authenticate with your Quran Foundation account
+2. **Browse Verses**: Explore the Quran using the interactive browser
+3. **Select a Verse**: Choose a verse that resonates with you
+4. **Write Reflection**: Use the rich editor to journal your thoughts
+5. **Track Progress**: View your spiritual journey on the progress dashboard
+
+### Advanced Features
+- **Emotion Search**: "Find verses about patience" or "verses for hope"
+- **Tafseer Comparison**: Compare multiple scholarly interpretations
+- **Tag Organization**: Categorize reflections by themes like "patience", "gratitude"
+- **Audio Recitation**: Listen while reflecting for deeper immersion
+
+## 🏗️ Project Structure
+
+```
+tadabbur-app/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   ├── globals.css        # Global styles
+│   ├── layout.js          # Root layout
+│   └── page.js            # Homepage
+├── components/            # Reusable UI components
+├── lib/                   # Utility functions and API clients
+├── public/                # Static assets
+└── scripts/               # Build and maintenance scripts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🤝 Contributing
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+We welcome contributions! Please follow these steps:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Learn More
+### Development Guidelines
+- Follow ESLint configuration
+- Write meaningful commit messages
+- Test your changes thoroughly
+- Update documentation as needed
 
-To learn more about Next.js, take a look at the following resources:
+## 📄 License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🙏 Acknowledgments
 
-## Deploy on Vercel
+- Quran Foundation for API access and authentication
+- Islamic scholars for tafseer sources
+- Open source community for amazing tools and libraries
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📞 Contact
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For questions or support, please open an issue on GitHub.
+
+---
+
+*Built with ❤️ for the Muslim community to foster deeper connections with the Quran.*

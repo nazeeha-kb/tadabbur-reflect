@@ -4,9 +4,10 @@ import { getAyahByVerseKey } from "@/lib/api/quran";
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const verseKey = searchParams.get("verseKey");
+  const tafseerSource = searchParams.get("tafseer");
 
   try {
-    const ayah = await getAyahByVerseKey(verseKey);
+    const ayah = await getAyahByVerseKey(verseKey, tafseerSource || undefined);
     return NextResponse.json({ ayah });
   } catch (error) {
     return NextResponse.json(
@@ -16,3 +17,4 @@ export async function GET(request) {
   }
 }
 
+  
