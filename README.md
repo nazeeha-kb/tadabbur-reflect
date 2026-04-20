@@ -4,12 +4,16 @@
 [![React](https://img.shields.io/badge/React-19.0.0-blue)](https://reactjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[Live Link](https://tadabbur-reflect.vercel.app/)
 
 A modern, interactive web application that empowers Muslims to deepen their connection with the Quran through guided reflection, personalized insights, and progress tracking.
 
 ## 🌟 Problem Statement
 
 In today's fast-paced world, many Muslims struggle to maintain consistent Quran study and reflection. Traditional methods lack personalization, progress tracking, and interactive features that make spiritual growth engaging and sustainable.
+## Screenshot
+![screenshot](screenshot.png)
+
 
 ## 🚀 Solution
 
@@ -41,19 +45,21 @@ Inshirah provides a seamless platform for Quran reflection with:
 - Visual progress tracking across surahs and verses
 - Achievement system for milestones
 - Statistics dashboard for reflection patterns
+- **Quran Foundation User API Integration**: Streak tracking with future sync capabilities (demo placeholder)
 
 ### 🔐 Secure Authentication
-- OAuth integration with Quran Foundation API
+- OAuth integration with Quran Foundation API (partially implemented)
 - Secure user sessions and data privacy
-- Cross-device synchronization
+- Cross-device synchronization (planned)
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js 15, React 19, Tailwind CSS 4
 - **Backend**: Next.js API Routes
 - **Database**: Local storage with future MongoDB integration
-- **Authentication**: Quran Foundation OAuth
-- **AI/NLP**: Compromise.js for natural language processing
+- **Authentication**: Quran Foundation OAuth (scaffolding in place)
+- **AI/NLP**: OpenRouter API for emotion-based verse recommendations, Compromise.js for local NLP processing
+- **Quran APIs**: Quran Foundation Content API (for search/verses), User API (streak tracking - demo integration)
 - **UI Components**: Custom components with Phosphor Icons
 - **Markdown**: React Markdown with remark-breaks
 
@@ -100,17 +106,18 @@ Inshirah provides a seamless platform for Quran reflection with:
 ## 📖 Usage
 
 ### Getting Started
-1. **Sign In**: Authenticate with your Quran Foundation account
+1. **Sign In**: Authenticate with your Quran Foundation account (future implementation)
 2. **Browse Verses**: Explore the Quran using the interactive browser
 3. **Select a Verse**: Choose a verse that resonates with you
 4. **Write Reflection**: Use the rich editor to journal your thoughts
-5. **Track Progress**: View your spiritual journey on the progress dashboard
+5. **Track Progress**: View your spiritual journey on the progress dashboard, with Quran Foundation User API integration for streaks (demo placeholder)
 
 ### Advanced Features
-- **Emotion Search**: "Find verses about patience" or "verses for hope"
+- **Emotion Search**: "Find verses about patience" or "verses for hope" (powered by OpenRouter AI)
 - **Tafseer Comparison**: Compare multiple scholarly interpretations
 - **Tag Organization**: Categorize reflections by themes like "patience", "gratitude"
 - **Audio Recitation**: Listen while reflecting for deeper immersion
+- **User API Integration**: Streak tracking via Quran Foundation User API (future full sync)
 
 ## 🏗️ Project Structure
 
@@ -149,8 +156,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Quran Foundation for API access and authentication
+- Quran Foundation for Content API access, authentication scaffolding, and User API integration (streak tracking demo)
 - Islamic scholars for tafseer sources
+- OpenRouter for AI-powered emotion search
 - Open source community for amazing tools and libraries
 
 ## 📞 Contact

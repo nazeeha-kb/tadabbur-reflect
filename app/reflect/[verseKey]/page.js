@@ -210,7 +210,7 @@ export default function ReflectAyahPage() {
                 <div className="mt-5 rounded-xl border-l-4 border-[var(--teal)] bg-slate-50 px-4 py-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Context and tafsir
+                      Tafsir
                     </p>
                     <TafseerSourceSelect compact />
                   </div>

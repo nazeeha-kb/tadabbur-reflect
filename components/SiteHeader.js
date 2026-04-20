@@ -23,8 +23,13 @@ export default function SiteHeader() {
     <header className="w-full border-b border-slate-200/90 bg-background">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <div className="flex items-center gap-3">
-          <Link href="/" className="inline-flex items-center gap-2.5 font-serif text-lg font-semibold text-(--teal)">
-            <span className="inline-flex h-8 w-8 shrink-0 rounded-full bg-(--teal)" aria-hidden />
+          <Link href="/" className="inline-flex items-center gap-3 font-serif text-lg font-semibold text-(--teal)">
+            <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="24" fill="#2F6F6F" />
+              <text x="50%" y="55%" textAnchor="middle" fill="white" fontSize="20" fontFamily="serif" dy=".3em">
+                T
+              </text>
+            </svg>
             <span>Tadabbur</span>
           </Link>
         </div>
@@ -78,6 +83,12 @@ export default function SiteHeader() {
           >
             M
           </div> */}
+          {/* <Link
+            href="/api/auth/login"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--teal)"
+          >
+            Login
+          </Link> */}
         </div>
       </div>
 

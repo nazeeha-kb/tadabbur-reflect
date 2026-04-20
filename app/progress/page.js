@@ -44,13 +44,41 @@ function MilestoneRing({ current, target }) {
 
 export default function DashboardPage() {
   const [reflections, setReflections] = useState([]);
+  const [qfStreak, setQfStreak] = useState(null);
+  const [qfError, setQfError] = useState(null);
 
   useEffect(() => {
     setReflections(getStoredReflections());
   }, []);
 
+  useEffect(() => {
+    // Fetch streaks from Quran Foundation if authenticated
+    fetch("/api/streaks")
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else if (res.status === 401) {
+          setQfError("Not authenticated with Quran Foundation");
+          return null;
+        } else {
+          throw new Error("Failed to fetch streaks");
+        }
+      })
+      .then((data) => {
+        if (data) {
+          // Assuming the response has a 'streak' field; adjust based on actual API
+          setQfStreak(data.streak || data.current_streak || 0);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching QF streaks:", error);
+        setQfError("Unable to load Quran Foundation streaks");
+      });
+  }, []);
+
   const total = reflections.length;
-  const streak = useMemo(() => getDailyReflectionStreak(reflections), [reflections]);
+  const localStreak = useMemo(() => getDailyReflectionStreak(reflections), [reflections]);
+  const streak = qfStreak !== null ? qfStreak : localStreak;
   const topTag = useMemo(() => getMostFrequentTag(reflections), [reflections]);
   const lastIso = useMemo(() => getLastReflectionDateIso(reflections), [reflections]);
   const nextTarget = useMemo(() => getNextMilestoneTarget(total), [total]);
@@ -83,6 +111,15 @@ export default function DashboardPage() {
             <small>Consistency</small>
             <p className="dashboard-card__number">{streak}</p>
             <p className="text-md text-slate-500 font-semibold">Day Streak</p>
+            {qfStreak !== null ? (
+              <p className="text-xs text-slate-400">Quran Foundation User API (demo placeholder)</p>
+            ) : qfError ? (
+              <p className="text-xs text-slate-400">
+                Local data • Quran Foundation User API integration planned
+              </p>
+            ) : (
+              <p className="text-xs text-slate-400">Local data</p>
+            )}
           </section>
           <section className="surface-card dashboard-card gap-6">
             <small>Inner landscape</small>
