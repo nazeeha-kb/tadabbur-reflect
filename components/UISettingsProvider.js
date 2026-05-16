@@ -8,7 +8,7 @@ const UISettingsContext = createContext(null);
 const UI_COPY = {
   navHome: "Home",
   navReflections: "My Reflections",
-  navProgress: "Progress",
+  navDashboard: "Dashboard",
   languageLabel: "Language",
 };
 

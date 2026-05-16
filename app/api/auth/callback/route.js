@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
-import { exchangeAuthorizationCode, validateStateAndConsumePkceSession, updateStoredTokens } from "@/lib/auth/qfPkceAuth";
+import {
+  exchangeAuthorizationCode,
+  fetchQfUserProfile,
+  sessionUserFromIdTokenClaims,
+  validateStateAndConsumePkceSession,
+  validateIdTokenClaims,
+} from "@/lib/auth/qfPkceAuth";
+import { setAppSession } from "@/lib/server/session";
+import { authLog } from "@/lib/server/authDebug";
 
 /**
  * OAuth2 authorization code callback: validate state (CSRF), exchange code using persisted PKCE verifier.
@@ -13,26 +21,55 @@ export async function GET(request) {
   const oauthDesc = searchParams.get("error_description");
 
   if (oauthError) {
-    const msg = oauthDesc || oauthError;
-    return NextResponse.redirect(new URL(`/?auth_error=${encodeURIComponent(msg.slice(0, 200))}`, request.url));
+    return NextResponse.redirect(new URL(`/?auth_error=${encodeURIComponent("oauth_cancelled")}`, request.url));
   }
 
   if (!code || !state) {
-    return NextResponse.redirect(new URL("/?auth_error=missing_code_or_state", request.url));
+    return NextResponse.redirect(new URL("/?auth_error=invalid_state", request.url));
   }
 
   try {
-    const { codeVerifier, redirectUri } = await validateStateAndConsumePkceSession(state);
+    authLog("callback.start", { hasCode: true, hasState: true });
+    const { codeVerifier, redirectUri, nonce } = await validateStateAndConsumePkceSession(state);
+    authLog("callback.pkce_ok", { redirectUri });
+
     const tokens = await exchangeAuthorizationCode({
       code,
       redirectUri,
       codeVerifier,
     });
-    await updateStoredTokens(tokens);
 
+    if (!tokens.access_token) {
+      throw new Error("token_exchange_failed");
+    }
+
+    authLog("callback.exchange_ok", {
+      hasIdToken: Boolean(tokens.id_token),
+      hasRefresh: Boolean(tokens.refresh_token),
+      expiresIn: tokens.expires_in,
+    });
+
+    const user =
+      tokens.id_token != null
+        ? sessionUserFromIdTokenClaims(
+            validateIdTokenClaims({ idToken: tokens.id_token, expectedNonce: nonce }),
+          )
+        : await fetchQfUserProfile(tokens.access_token);
+
+    await setAppSession(user, { qfTokens: tokens });
+
+    authLog("callback.session_ok", { userId: user.id });
     return NextResponse.redirect(new URL("/?auth=ok", request.url));
-  } catch {
-    return NextResponse.redirect(new URL("/?auth_error=session_invalid", request.url));
+  } catch (error) {
+    authLog("callback.error", { message: String(error?.message || error) });
+    const codeValue = String(error?.message || "");
+    const known =
+      codeValue === "invalid_nonce" ||
+      codeValue === "invalid_state" ||
+      codeValue === "expired_session" ||
+      codeValue === "invalid_id_token_sub";
+    const redirectCode = known ? codeValue : "token_exchange_failed";
+    return NextResponse.redirect(new URL(`/?auth_error=${encodeURIComponent(redirectCode)}`, request.url));
   }
 }
 
@@ -56,7 +93,7 @@ export async function POST(request) {
     });
 
     return NextResponse.json(tokens);
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to exchange authorization code for tokens" }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "token_exchange_failed" }, { status: 500 });
   }
 }

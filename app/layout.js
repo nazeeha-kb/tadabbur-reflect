@@ -1,6 +1,10 @@
 import { Cormorant_Garamond, Inter, Patrick_Hand, Instrument_Serif } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "sonner";
 import { UISettingsProvider } from "@/components/UISettingsProvider";
+import { AuthProvider } from "@/components/AuthProvider";
+import AuthModal from "@/components/AuthModal";
+import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 
 const headingFont = Cormorant_Garamond({
@@ -40,13 +44,21 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${headingFont.variable} ${bodyFont.variable} ${writingFont.variable} ${numberFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full overflow-x-hidden bg-stone-50 text-slate-900">
+      <body suppressHydrationWarning className="flex min-h-full flex-col overflow-x-hidden bg-stone-50 text-slate-900">
         <UISettingsProvider>
-          {children}
-          <Toaster position="bottom-right" richColors closeButton />
+          <AuthProvider>
+            <div className="flex min-h-full flex-1 flex-col">
+              {children}
+              <SiteFooter />
+            </div>
+            <AuthModal />
+            <Toaster position="bottom-right" richColors closeButton />
+          </AuthProvider>
         </UISettingsProvider>
+        <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
       </body>
     </html>
   );

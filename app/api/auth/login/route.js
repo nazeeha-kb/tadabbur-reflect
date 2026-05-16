@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
-import { buildAuthorizationUrl } from "@/lib/auth/qfPkceAuth";
+import { buildAuthorizationUrl, resolveOAuthRedirectUri } from "@/lib/auth/qfPkceAuth";
 
 /**
  * Starts Authorization Code + PKCE flow: sets PKCE cookie and redirects to /oauth2/auth.
  * Set QF_OAUTH_REDIRECT_URI to this app's callback URL (e.g. http://localhost:3000/api/auth/callback).
  */
-export async function GET() {
-  const redirectUri = process.env.QF_OAUTH_REDIRECT_URI?.trim();
+export async function GET(request) {
+  const redirectUri = resolveOAuthRedirectUri(request.url);
   if (!redirectUri) {
     return NextResponse.json(
-      { error: "QF_OAUTH_REDIRECT_URI is not set (must match the redirect URI registered with Quran Foundation)." },
+      { error: "QF_REDIRECT_URI is not set (must match Quran Foundation registered redirect URI)." },
       { status: 500 },
     );
   }

@@ -15,11 +15,30 @@
   --ink-muted: rgba(100, 116, 139, 0.92);
   --shadow-soft: 0 8px 24px -18px rgba(30, 41, 59, 0.18);
   --shadow-lift: 0 12px 28px -20px rgba(30, 41, 59, 0.22);
+  --popover: #ffffff;
+  --accent: #e6f0ef;
+  --muted-foreground: #64748b;
+  --primary: #1f6b71;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #1e293b;
+  --ring: #d7dee3;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-ring: var(--ring);
   --font-sans: var(--font-body);
 }
 

@@ -4,19 +4,25 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUISettings } from "@/components/UISettingsProvider";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function SiteHeader() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const { t } = useUISettings();
+  const { isAuthenticated, startQfSignIn, continueAsGuest, signOut, user, streak, authReady } = useAuth();
   const isHome = pathname === "/";
-  const isProgress = pathname === "/progress";
+  const isDashboard = pathname === "/dashboard" || pathname === "/progress";
   const isReflections = pathname === "/reflections" || pathname?.startsWith("/reflections/");
 
   const navLinks = [
-    { href: "/", label: t("navHome"), active: isHome },
-    { href: "/reflections", label: t("navReflections"), active: isReflections },
-    { href: "/progress", label: t("navProgress"), active: isProgress },
+    ...(isAuthenticated
+      ? [
+          { href: "/", label: t("navHome"), active: isHome },
+          { href: "/reflections", label: t("navReflections"), active: isReflections },
+          { href: "/dashboard", label: t("navDashboard"), active: isDashboard },
+        ]
+      : []),
   ];
 
   return (
@@ -76,6 +82,41 @@ export default function SiteHeader() {
             ))}
           </nav>
 
+          {!authReady ? null : !isAuthenticated ? (
+            <div className="hidden items-center gap-2 sm:flex">
+              <button
+                type="button"
+                onClick={() => startQfSignIn("signup")}
+                className="rounded-lg bg-(--teal) px-3 py-2 text-sm font-semibold text-white transition hover:brightness-105"
+              >
+                Sign Up
+              </button>
+              <button
+                type="button"
+                onClick={continueAsGuest}
+                className="rounded-lg bg-(--peach-soft) px-3 py-2 text-sm font-semibold text-(--peach) transition hover:brightness-95"
+              >
+                Continue as Guest
+              </button>
+            </div>
+          ) : (
+            <div className="hidden items-center gap-2 sm:flex">
+              <span className="rounded-full bg-(--peach-soft) px-3 py-1 text-xs font-semibold text-(--peach)">
+                🔥 {streak?.currentStreak || 0}
+              </span>
+              <div className="flex h-9 min-w-9 items-center justify-center rounded-full bg-(--teal) px-2 text-xs font-semibold text-white">
+                {(user?.name || user?.email || "U").slice(0, 1).toUpperCase()}
+              </div>
+              <button
+                type="button"
+                onClick={signOut}
+                className="rounded-lg bg-(--teal) px-3 py-2 text-sm font-semibold text-white transition hover:brightness-105"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
+
           {/* <div
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-(--teal) text-sm font-semibold text-white"
             title="Profile"
@@ -105,6 +146,31 @@ export default function SiteHeader() {
             </Link>
           ))}
         </nav>
+        {!authReady ? null : !isAuthenticated ? (
+          <div className="mt-3 flex flex-col gap-2">
+            <button type="button" onClick={continueAsGuest} className="w-full rounded-xl bg-(--peach-soft) px-3 py-2 text-sm font-semibold text-(--peach)">
+              Continue as Guest
+            </button>
+            <button
+              type="button"
+              onClick={() => startQfSignIn("signup")}
+              className="w-full rounded-xl bg-(--teal) px-3 py-2 text-sm font-semibold text-white"
+            >
+              Sign Up
+            </button>
+          </div>
+        ) : (
+          <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2">
+            <span className="text-sm text-slate-600">🔥 {streak?.currentStreak || 0} days</span>
+            <button
+              type="button"
+              onClick={signOut}
+              className="rounded-lg bg-(--teal) px-3 py-2 text-sm font-semibold text-white transition hover:brightness-105"
+            >
+              Sign Out
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
