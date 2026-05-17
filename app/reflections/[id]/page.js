@@ -6,13 +6,14 @@ import { useParams, useRouter } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 import TagInput from "@/components/TagInput";
 import AyahAudioButton from "@/components/AyahAudioButton";
-import TafseerSourceSelect from "@/components/TafseerSourceSelect";
+import AyahTafseerBlock from "@/components/AyahTafseerBlock";
+import TafseerVisibilityToggle from "@/components/TafseerVisibilityToggle";
 import RichReflectionEditor from "@/components/RichReflectionEditor";
 import { useUISettings } from "@/components/UISettingsProvider";
 import { formatVerseCitation } from "@/lib/quran/surahNames";
 import { getReflectionById, updateReflection } from "@/lib/storage/reflections";
-import { getTafseerSourceMeta } from "@/lib/tafseerSources";
 import { toast } from "sonner";
+import ReflectionSearchLink from "@/components/ReflectionSearchLink";
 
 export default function ReflectionDetailPage() {
   const params = useParams();
@@ -25,9 +26,10 @@ export default function ReflectionDetailPage() {
   const [tags, setTags] = useState([]);
   const [ayahs, setAyahs] = useState([]);
   const [emotion, setEmotion] = useState("");
+  const [reflectionRecord, setReflectionRecord] = useState(null);
   const [createdAt, setCreatedAt] = useState("");
   const [updatedAt, setUpdatedAt] = useState("");
-  const { tafseerSource } = useUISettings();
+  const { tafseerSource, showTafseer } = useUISettings();
   const lastTafseerSync = useRef("");
 
   useEffect(() => {
@@ -45,13 +47,14 @@ export default function ReflectionDetailPage() {
     setTags(Array.isArray(r.tags) ? r.tags : []);
     setAyahs(Array.isArray(r.ayahs) ? r.ayahs : []);
     setEmotion(r.emotion || "");
+    setReflectionRecord(r);
     setCreatedAt(r.createdAt || "");
     setUpdatedAt(r.updatedAt || "");
     setLoaded(true);
   }, [id, router]);
 
   useEffect(() => {
-    if (!loaded || ayahs.length === 0) return;
+    if (!loaded || ayahs.length === 0 || !showTafseer) return;
     const syncKey = `${tafseerSource}:${ayahs.length}`;
     if (lastTafseerSync.current === syncKey) return;
     lastTafseerSync.current = syncKey;
@@ -80,7 +83,7 @@ export default function ReflectionDetailPage() {
     return () => {
       cancelled = true;
     };
-  }, [ayahs, loaded, tafseerSource]);
+  }, [ayahs, loaded, tafseerSource, showTafseer]);
 
   const handleSave = () => {
     if (!reflectionText.trim()) return;
@@ -99,30 +102,35 @@ export default function ReflectionDetailPage() {
   };
 
   if (!loaded) {
-    return (
-      <div className="min-h-screen">
-        <SiteHeader />
-        <p className="mx-auto max-w-5xl px-4 py-10 text-sm text-slate-600 sm:px-6">Loading…</p>
-      </div>
-    );
+    return null;
   }
 
   return (
     <div className="min-h-screen">
       <SiteHeader />
       <main className="mx-auto w-full max-w-5xl px-4 pb-16 pt-4 sm:px-6">
-        <div className="flex flex-wrap items-center gap-3 text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
           <Link href="/reflections" className="font-medium text-[var(--teal)] hover:underline">
             ← My Reflections
           </Link>
+          <TafseerVisibilityToggle compact />
         </div>
-
+      
         <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--peach)]">Edit reflection</p>
-        <p className="mt-2 text-sm text-slate-600">
+        <ReflectionSearchLink reflection={reflectionRecord} className="mt-2 block w-full rounded-lg focus-visible:focus-ring">
+          <p className="text-sm text-slate-600">
           Reflection on:{" "}
           <span className="font-medium text-slate-800">&ldquo;{emotion || "—"}&rdquo;</span>
         </p>
-        <h1 className="mt-3 font-serif text-3xl text-[var(--teal)] sm:text-4xl">{title.trim() || "Untitled reflection"}</h1>
+        </ReflectionSearchLink>
+        <ReflectionSearchLink
+          reflection={reflectionRecord}
+          className="mt-3 block w-full rounded-lg focus-visible:focus-ring"
+        >
+          <h1 className="font-serif text-3xl text-[var(--teal)] hover:underline sm:text-4xl">
+            {title.trim() || "Untitled reflection"}
+          </h1>
+        </ReflectionSearchLink>
 
         <section className="mt-8 space-y-6" aria-label="Verses">
           {ayahs.map((ayah) => (
@@ -137,20 +145,7 @@ export default function ReflectionDetailPage() {
                 {ayah.arabicText}
               </p>
               <p className="mt-6 text-xl leading-relaxed text-slate-800">{ayah.translation}</p>
-              {ayah.tafseer?.trim() ? (
-                <div className="mt-5 rounded-xl border-l-4 border-[var(--teal)] bg-slate-50 px-4 py-3">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Tafsir
-                    </p>
-                    <TafseerSourceSelect compact />
-                  </div>
-                  <p className="mt-2 text-xs text-slate-500">
-                    Current source: {getTafseerSourceMeta(tafseerSource).label}
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-700">{ayah.tafseer}</p>
-                </div>
-              ) : null}
+              <AyahTafseerBlock tafseer={ayah.tafseer} className="mt-5" />
             </article>
           ))}
         </section>

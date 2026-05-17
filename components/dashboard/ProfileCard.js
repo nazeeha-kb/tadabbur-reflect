@@ -176,7 +176,7 @@ export default function ProfileCard() {
   const displayInitial = (nameDraft || user?.name || "U").slice(0, 1).toUpperCase();
   const subtitle = isGuest
     ? "Browsing as guest — your reflections stay on this device."
-    : "Your reflection practice at a glance.";
+    : "";
 
   return (
     <section className="surface-card rounded-3xl p-6 sm:p-8">

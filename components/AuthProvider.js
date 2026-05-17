@@ -371,18 +371,6 @@ export function AuthProvider({ children }) {
 
     authClientLog("guest.start");
 
-    try {
-
-      await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
-
-    } catch {
-
-      // still allow guest if logout fails
-
-    }
-
-
-
     const guestId = `guest_${crypto.randomUUID()}`;
 
     const guest = { id: guestId, createdAt: new Date().toISOString() };
@@ -402,6 +390,8 @@ export function AuthProvider({ children }) {
     toast.success("Continuing as guest");
 
     authClientLog("guest.ok");
+
+    void fetch("/api/auth/logout", { method: "POST", credentials: "include" }).catch(() => {});
 
   }
 
@@ -463,15 +453,11 @@ export function AuthProvider({ children }) {
 
 
 
-  async function signOut() {
+  function signOut() {
 
     authClientLog("logout.start");
 
-    if (user?.kind !== "guest") {
-
-      await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
-
-    }
+    const wasRegistered = user?.kind !== "guest";
 
     clearGuestStorage();
 
@@ -484,6 +470,12 @@ export function AuthProvider({ children }) {
     toast.success("Signed out");
 
     authClientLog("logout.ok");
+
+    if (wasRegistered) {
+
+      void fetch("/api/auth/logout", { method: "POST", credentials: "include" }).catch(() => {});
+
+    }
 
   }
 

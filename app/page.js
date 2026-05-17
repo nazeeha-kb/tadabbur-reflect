@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { HOME_SEARCH_QUERY_KEY } from "@/lib/reflections/searchQuery";
+import { navigateToReflectSearch } from "@/lib/navigation/reflectNav";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -11,6 +13,7 @@ import {
   NoteIcon,
   PenIcon,
   PlantIcon,
+  ChartBarIcon,
   SunDimIcon,
   WindIcon,
 } from "@phosphor-icons/react";
@@ -19,6 +22,7 @@ import { SearchIcon } from "@/components/icons";
 import TafseerSourceSelect from "@/components/TafseerSourceSelect";
 import { useUISettings } from "@/components/UISettingsProvider";
 import { useAuth } from "@/components/AuthProvider";
+import { searchDebug } from "@/lib/search/searchDebug";
 
 const EXPLORE_BY_EMOTION = [
   { label: "Sadness", query: "sadness sorrow comfort healing", Icon: CloudRainIcon, emotionBg: "bg-[#F2F6F2]", emotionText: "text-(--teal)" },
@@ -32,8 +36,8 @@ const EXPLORE_BY_EMOTION = [
 const HOW_STEPS = [
   {
     step: "STEP 01",
-    title: "Type your emotion",
-    body: "Share what's on your heart. Whether it's anxiety, gratitude, or seeking hope, we are here to listen.",
+    title: "Share what you're feeling",
+    body: "Enter a feeling, thought, or topic on your heart, and begin your reflection journey through relevant ayahs.",    
     cardBorder: "border-[#8FC4C4]",
     cardBg: "bg-[#EBF5F5]",
     stepColor: "text-[#3d6666]",
@@ -60,75 +64,98 @@ const HOW_STEPS = [
     iconColor: "text-[#3d6b58]",
     Icon: PenIcon,
   },
+  {
+    step: "STEP 04",
+    title: "Track your journey",
+    body: "Revisit past reflections, notice emotional patterns, and see how your spiritual journey grows over time.",
+    cardBorder: "border-[#A79ACF]",
+    cardBg: "bg-[#F4F2FB]",
+    stepColor: "text-[#5b4f8a]",
+    iconColor: "text-[#6b5ca5]",
+    Icon: ChartBarIcon,
+  }
 ];
 
 export default function Home() {
   const [emotion, setEmotion] = useState("");
   const { tafseerSource } = useUISettings();
-  const { isAuthenticated, openSignIn, trackActivity, streak, user, usedFallback } = useAuth();
+  const { authReady, isAuthenticated, openSignIn, trackActivity, streak, user, usedFallback } = useAuth();
   const router = useRouter();
   const lastActiveLabel = useMemo(() => streak?.lastActiveDate || "Not yet active", [streak]);
 
-  async function guardAndTrack() {
-    if (!isAuthenticated) {
-      openSignIn();
-      toast.message("Please sign in, sign up, or continue as guest.");
-      return false;
+  useEffect(() => {
+    try {
+      const stored = sessionStorage.getItem(HOME_SEARCH_QUERY_KEY);
+      if (stored?.trim()) setEmotion(stored.trim());
+    } catch {
+      /* ignore */
     }
-    await trackActivity();
-    return true;
+  }, []);
+
+  function startReflectSearch(trimmed) {
+    searchDebug("home.submit", { query: trimmed, authReady, isAuthenticated });
+    navigateToReflectSearch(router, { query: trimmed, tafseerSource });
+    if (isAuthenticated) {
+      void trackActivity();
+    }
   }
 
-  async function handleSubmit(event) {
+  function handleSubmit(event) {
     event.preventDefault();
     const trimmed = emotion.trim();
     if (!trimmed) return;
-    if (!(await guardAndTrack())) return;
-    router.push(`/reflect?q=${encodeURIComponent(trimmed)}&tafseer=${encodeURIComponent(tafseerSource)}`);
+
+    if (!authReady) {
+      toast.message("Preparing your session…");
+    }
+
+    if (authReady && !isAuthenticated) {
+      openSignIn();
+      toast.message("Please sign in, sign up, or continue as guest to save reflections.");
+    }
+
+    startReflectSearch(trimmed);
   }
 
-  async function handleExploreCard(query) {
+  function handleExploreCard(query) {
     const trimmed = query.trim();
     if (!trimmed) return;
     setEmotion(trimmed);
-    if (!(await guardAndTrack())) return;
-    router.push(`/reflect?q=${encodeURIComponent(trimmed)}&tafseer=${encodeURIComponent(tafseerSource)}`);
+
+    if (authReady && !isAuthenticated) {
+      openSignIn();
+      toast.message("Please sign in, sign up, or continue as guest to save reflections.");
+    }
+
+    startReflectSearch(trimmed);
   }
 
   return (
     <div className="min-h-screen relative">
       <SiteHeader />
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-4 pb-16 sm:gap-20 sm:px-6 relative z-10 overflow-hidden">
-        {isAuthenticated ? (
-          <section className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-(--border) bg-white px-4 py-3 shadow-sm">
-            <div className="flex flex-col">
-              <p className="text-sm text-slate-600">Signed in as {user?.name || user?.email || "User"}</p>
-              <p className="text-xs text-slate-500">Last active (UTC): {lastActiveLabel}</p>
-            </div>
-            <span className="rounded-full bg-(--peach-soft) px-3 py-1 text-sm font-semibold text-(--peach)">🔥 {streak?.currentStreak || 0} days</span>
-          </section>
-        ) : null}
         {usedFallback ? (
           <p className={isAuthenticated ? "-mt-10 text-xs text-amber-700" : "mt-6 text-xs text-amber-700"}>
             Quran Foundation User API is currently unavailable. You are using local fallback mode.
           </p>
         ) : null}
 
-        <section className="relative overflow-hidden pb-8 sm:pb-10 pt-30 sm:pt-35">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -z-10 -top-24 left-[8%] h-64 w-64 rounded-full bg-[radial-gradient(circle_at_center,rgba(31,107,113,0.2),rgba(31,107,113,0)_70%)] blur-2xl md:block hidden"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -z-10 right-[6%] top-8 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(212,141,98,0.18),rgba(212,141,98,0)_70%)] blur-2xl"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -z-10 bottom-0 left-1/2 h-52 w-3xl max-w-[92vw] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(31,107,113,0.1),rgba(31,107,113,0)_72%)] blur-xl"
-          />
+{/* Soft background gradient */}
+<div
+  aria-hidden
+  className="pointer-events-none fixed inset-0 -z-10 h-screen w-screen overflow-hidden"
+>
+  <div className="absolute -top-40 left-[6%] h-[22rem] w-[22rem] rounded-full bg-[#1f6b71]/12 blur-[100px]" />
+  
+  <div className="absolute top-12 right-[4%] h-[20rem] w-[20rem] rounded-full bg-[#d48d62]/10 blur-[100px]" />
+  
+  <div className="absolute bottom-0 left-1/2 h-48 w-[min(100%,48rem)] -translate-x-1/2 rounded-full bg-[#1f6b71]/8 blur-[80px]" />
+</div>
+    
 
-          <div className="mx-auto flex w-full max-w-3xl flex-col items-center px-4 text-center sm:px-6">
+        <section className="relative overflow-hidden pb-8 sm:pb-10 pt-30 sm:pt-35">
+
+          <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center px-4 text-center sm:px-6">
             <p className="rounded-full bg-(--peach-soft) px-4 py-1 text-xs font-semibold tracking-[0.2em] text-(--peach) uppercase">
               A Sanctuary For The Soul
             </p>
@@ -143,7 +170,7 @@ export default function Home() {
               onSubmit={handleSubmit}
               className="mt-10 flex w-full max-w-4xl flex-col justify-between items-stretch gap-3 rounded-3xl border border-border bg-white p-3 shadow-md sm:flex-row sm:rounded-full sm:py-1.5 sm:pl-4 sm:pr-1.5"
             >
-              <div className="flex items-center">
+              <div className="flex items-center grow">
               <label htmlFor="emotion" className="sr-only">
                 Describe how you feel
               </label>
@@ -160,7 +187,7 @@ export default function Home() {
                 required
               />
               </div>
-              <div className="flex sm:w-auto w-full gap-3">
+              <div className="flex sm:w-auto w-full gap-3 items-center">
               <TafseerSourceSelect compact className="w-auto sm:grow-0 grow"/>
               <button
                 type="submit"
@@ -212,13 +239,13 @@ export default function Home() {
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-[#7C8E8E] sm:text-[0.9375rem]">
             A simple three-step journey to find clarity and peace through divine wisdom.
           </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-6 lg:mt-14 lg:grid-cols-3 lg:gap-7 items-center justify-center">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-6 lg:mt-14 lg:grid-cols-4 lg:gap-7 items-center justify-center">
             {HOW_STEPS.map((item) => {
               const Icon = item.Icon;
               return (
                 <article
                   key={item.step}
-                  className={`flex flex-col items-center rounded-[1.75rem] px-8 py-10 text-center sm:px-9 sm:py-11 ${item.cardBg} border ${item.cardBorder} shadow-md`}
+                  className={`flex flex-col items-center rounded-[1.75rem] px-8 py-10 text-center sm:px-9 sm:py-11 ${item.cardBg} border ${item.cardBorder} shadow-md h-full`}
                 >
                   <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-white shadow-md ring-1 ring-slate-900/5">
                     <Icon className={`h-8 w-8 ${item.iconColor}`} />

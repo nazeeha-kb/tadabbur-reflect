@@ -47,6 +47,12 @@
   --font-number: var(--font-number);
 }
 
+@layer base {
+  button{
+    cursor: pointer;
+  }
+}
+
 @layer utilities {
   .underline-indicators>* {
     @apply flex flex-col
@@ -98,16 +104,16 @@
   color: rgba(30, 41, 59, 0.92);
 }
 
-body {
-  background:
-    radial-gradient(1200px 520px at 10% -5%, rgba(31, 107, 113, 0.06), transparent 60%),
-    radial-gradient(900px 420px at 100% 0%, rgba(212, 141, 98, 0.07), transparent 58%),
-    var(--background);
-  color: var(--foreground);
-  font-family: var(--font-body), sans-serif;
-  line-height: 1.55;
-  text-rendering: optimizeLegibility;
+@layer base {
+  body {
+    @apply min-h-screen bg-[#f8f6f2] text-[#1f2937];
+    color: var(--foreground);
+    font-family: var(--font-body), sans-serif;
+    line-height: 1.55;
+    text-rendering: optimizeLegibility;
+  }
 }
+
 
 h1,
 h2,

@@ -21,8 +21,8 @@ export default function SiteFooter() {
 
   return (
     <footer className="mt-auto w-full border-t border-slate-200/90 bg-background">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
-        <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mx-auto w-full max-w-6xl px-4 pb-10 sm:px-6 sm:pb-12">
+        {/* <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-sm space-y-3">
             <Link href="/" className="inline-flex items-center gap-2.5 font-serif text-lg font-semibold text-(--teal)">
               <span
@@ -49,9 +49,9 @@ export default function SiteFooter() {
               </Link>
             ))}
           </nav>
-        </div>
+        </div> */}
 
-        <div className="mt-8 flex flex-col gap-2 border-t border-slate-200/80 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} Tadabbur. All rights reserved.</p>
           <p className="text-slate-400">Reflect with intention. Grow with consistency.</p>
         </div>

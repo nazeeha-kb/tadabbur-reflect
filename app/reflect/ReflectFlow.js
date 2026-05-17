@@ -1,13 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AyahsLoadingSkeleton from "@/components/AyahsLoadingSkeleton";
 import AyahAudioButton from "@/components/AyahAudioButton";
 import SiteHeader from "@/components/SiteHeader";
 import { formatVerseCitation } from "@/lib/quran/surahNames";
+import { persistHomeSearchQuery } from "@/lib/reflections/searchQuery";
 import { getStoredReflections } from "@/lib/storage/reflections";
 import { useUISettings } from "@/components/UISettingsProvider";
+import { searchDebug } from "@/lib/search/searchDebug";
+import { cacheVerseForReflection } from "@/lib/reflections/verseCache";
 
 const PER_PAGE = 8;
 
@@ -19,6 +22,7 @@ export default function ReflectFlow() {
   const page = useMemo(() => Math.max(1, Number(searchParams.get("page") || "1")), [searchParams]);
   const { tafseerSource, setTafseerSource } = useUISettings();
 
+  const [, startTransition] = useTransition();
   const [ayahs, setAyahs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -40,31 +44,54 @@ export default function ReflectFlow() {
     if (queryTafseerSource && queryTafseerSource !== tafseerSource) {
       setTafseerSource(queryTafseerSource);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryTafseerSource, setTafseerSource, tafseerSource]);
 
   useEffect(() => {
+    searchDebug("reflect.mount", {
+      emotionQuery,
+      tafseerSource,
+    });
+
     if (!emotionQuery) {
       setError("Please go back and enter an emotion.");
       setLoading(false);
       return;
     }
 
+    persistHomeSearchQuery(emotionQuery);
+
     let alive = true;
     async function loadAyahs() {
       try {
         setLoading(true);
         setError("");
-        const endpoint = `/api/ayahs?q=${encodeURIComponent(emotionQuery)}${
-          tafseerSource ? `&tafseer=${encodeURIComponent(tafseerSource)}` : ""
-        }`;
-        const response = await fetch(endpoint);
+        const endpoint = `/api/ayahs?q=${encodeURIComponent(emotionQuery)}`;
+        searchDebug("reflect.fetch.start", { endpoint });
+        const response = await fetch(endpoint, { cache: "no-store" });
         const payload = await response.json();
+        searchDebug("reflect.fetch.response", {
+          ok: response.ok,
+          status: response.status,
+          ayahCount: payload?.ayahs?.length ?? 0,
+        });
         if (!response.ok) {
-          throw new Error(payload.message || "Unable to fetch verses.");
+          const msg =
+            payload?.message ||
+            (payload?.code === "SDK_AUTH"
+              ? "Quran Foundation authentication failed. Check QF_CLIENT_ID, QF_CLIENT_SECRET, and QF_ENV (prelive vs production)."
+              : payload?.code === "NETWORK"
+                ? "Check your connection and try again."
+                : payload?.code === "EMPTY"
+                  ? "No results found for this search."
+                  : "Search request failed.");
+          throw new Error(msg);
         }
         if (alive) {
-          setAyahs(payload.ayahs || []);
+          const nextAyahs = Array.isArray(payload.ayahs) ? payload.ayahs : [];
+          setAyahs(nextAyahs);
+          if (nextAyahs.length === 0) {
+            setError(payload?.message || "No results found for this search.");
+          }
           try {
             if (emotionQuery) {
               sessionStorage.setItem(`reflect-themes:${emotionQuery}`, JSON.stringify(payload.themes || []));
@@ -74,7 +101,15 @@ export default function ReflectFlow() {
           }
         }
       } catch (loadError) {
-        if (alive) setError(loadError?.message || "Something went wrong.");
+        if (alive) {
+          const msg = loadError?.message || "";
+          if (/failed to fetch|network/i.test(msg)) {
+            setError("Check your connection and try again.");
+          } else {
+            setError(msg || "Search request failed.");
+          }
+        }
+        searchDebug("reflect.fetch.error", { message: loadError?.message });
       } finally {
         if (alive) setLoading(false);
       }
@@ -84,7 +119,6 @@ export default function ReflectFlow() {
     return () => {
       alive = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emotionQuery, tafseerSource]);
 
   useEffect(() => {
@@ -118,6 +152,12 @@ export default function ReflectFlow() {
           )}
           {!loading && error && <p className="surface-card border-rose-300 p-6 text-sm text-rose-700">{error}</p>}
 
+          {!loading && !error && ayahs.length === 0 ? (
+            <p className="surface-card p-6 text-sm text-slate-600">
+              No verses matched this search. Try different words or check the browser console with search debug enabled.
+            </p>
+          ) : null}
+
           {!loading &&
             !error &&
             pagedAyahs.map((ayah) => (
@@ -125,21 +165,21 @@ export default function ReflectFlow() {
                 key={ayah.id}
                 role="link"
                 tabIndex={0}
-                onClick={() =>
-                  router.push(
-                    `/reflect/${encodeURIComponent(ayah.verseKey)}?q=${encodeURIComponent(emotionQuery)}${
-                      tafseerSource ? `&tafseer=${encodeURIComponent(tafseerSource)}` : ""
-                    }`,
-                  )
-                }
+                onClick={() => {
+                  cacheVerseForReflection(ayah);
+                  const href = `/reflect/${encodeURIComponent(ayah.verseKey)}?q=${encodeURIComponent(emotionQuery)}${
+                    tafseerSource ? `&tafseer=${encodeURIComponent(tafseerSource)}` : ""
+                  }`;
+                  startTransition(() => router.push(href));
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    router.push(
-                      `/reflect/${encodeURIComponent(ayah.verseKey)}?q=${encodeURIComponent(emotionQuery)}${
-                        tafseerSource ? `&tafseer=${encodeURIComponent(tafseerSource)}` : ""
-                      }`,
-                    );
+                    cacheVerseForReflection(ayah);
+                    const href = `/reflect/${encodeURIComponent(ayah.verseKey)}?q=${encodeURIComponent(emotionQuery)}${
+                      tafseerSource ? `&tafseer=${encodeURIComponent(tafseerSource)}` : ""
+                    }`;
+                    startTransition(() => router.push(href));
                   }
                 }}
                 className={`relative block cursor-pointer rounded-[2rem] border p-6 sm:p-8 transition focus-visible:focus-ring ${
@@ -159,10 +199,18 @@ export default function ReflectFlow() {
                 <p className="text-xs font-semibold tracking-wide uppercase text-[var(--peach)]">
                   {formatVerseCitation(ayah)}
                 </p>
-                <p className="mt-5 text-right text-3xl leading-[1.85] text-[#0f4f5f] sm:text-[2rem]">
-                  {ayah.arabicText}
-                </p>
-                <p className="mt-6 text-xl leading-relaxed text-slate-800 font-sans">{ayah.translation}</p>
+                {ayah.arabicText ? (
+                  <p
+                    dir="rtl"
+                    lang="ar"
+                    className="mt-4 text-center text-xl leading-[1.9] text-[#0f4f5f]"
+                  >
+                    {ayah.arabicText}
+                  </p>
+                ) : null}
+                {ayah.translation ? (
+                  <p className="mt-4 text-sm leading-relaxed text-slate-600">{ayah.translation}</p>
+                ) : null}
                 <p className="mt-5 text-xs font-medium text-[var(--teal)] opacity-0 transition group-hover:opacity-100">
                   Open this ayah →
                 </p>

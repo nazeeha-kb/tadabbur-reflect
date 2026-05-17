@@ -10,6 +10,7 @@ import { formatVerseCitation } from "@/lib/quran/surahNames";
 import { deleteReflection, getStoredReflections } from "@/lib/storage/reflections";
 import { toast } from "sonner";
 import { BookOpenTextIcon } from "@phosphor-icons/react";
+import ReflectionSearchLink from "@/components/ReflectionSearchLink";
 
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString(undefined, {
@@ -265,10 +266,17 @@ export default function ReflectionsPage() {
                 className="group rounded-3xl border border-[var(--border)] bg-[linear-gradient(180deg,#ffffff_0%,#fbfaf8_100%)] p-6 text-left shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] transition hover:border-[var(--teal)]/40 hover:shadow-md flex flex-col"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <p className="text-xs leading-snug text-[var(--peach)]">
-                    Reflection on:{" "}
-                    <span className="font-medium text-slate-700">&ldquo;{item.emotion || "—"}&rdquo;</span>
-                  </p>
+                  <ReflectionSearchLink
+                    reflection={item}
+                    className="min-w-0 flex-1 rounded-lg focus-visible:focus-ring"
+                  >
+                    <p className="text-xs leading-snug text-[var(--peach)]">
+                      Reflection on:{" "}
+                      <span className="font-medium text-slate-700 hover:text-[var(--teal)] hover:underline">
+                        &ldquo;{item.emotion || "—"}&rdquo;
+                      </span>
+                    </p>
+                  </ReflectionSearchLink>
                   <div className="flex shrink-0 items-center gap-2">
                     <p className="text-xs font-medium text-slate-500">{formatDate(item.createdAt)}</p>
                     <button
@@ -306,21 +314,27 @@ export default function ReflectionsPage() {
                       })}
                     </ul>
                   ) : null}
-                <Link href={`/reflections/${item.id}`} className="focus-visible:focus-ring flex flex-col flex-1 gap-2 justify-between">
-                <div className="mt-4 flex flex-col gap-2">
-                {item.title? <h2 className="text-2xl text-[var(--teal)] group-hover:underline">
-                  {/* Title */}
-                    {item.title || "Untitled Reflection"}
-                  </h2> : "" 
-                }
-                  {/* Reflection */}
+                <div className="mt-4 flex flex-1 flex-col gap-2">
+                  {item.title ? (
+                    <ReflectionSearchLink
+                      reflection={item}
+                      className="block w-full rounded-lg focus-visible:focus-ring"
+                    >
+                      <h2 className="text-2xl text-[var(--teal)] group-hover:underline">
+                        {item.title || "Untitled Reflection"}
+                      </h2>
+                    </ReflectionSearchLink>
+                  ) : null}
+                  <Link
+                    href={`/reflections/${item.id}`}
+                    className="focus-visible:focus-ring flex flex-col flex-1 gap-2 justify-between"
+                  >
                   <div className="line-clamp-4 overflow-hidden text-sm">
                     <MarkdownContent>{item.reflectionText || ""}</MarkdownContent>
                   </div>
                   <p className="pt-2 text-xs text-slate-500">
                     Edited on: {formatDate(item.updatedAt || item.createdAt)}
                   </p>
-                </div>
                   {(item.tags || []).length > 0 ? (
                     <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Your tags">
                       {(item.tags || []).slice(0, 4).map((t) => (
@@ -333,7 +347,8 @@ export default function ReflectionsPage() {
                       ))}
                     </ul>
                   ) : null}
-                </Link>
+                  </Link>
+                </div>
               </article>
             ))}
           </section>

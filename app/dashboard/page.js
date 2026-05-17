@@ -40,15 +40,9 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-6xl px-4 pb-20 pt-15 sm:px-6 md:pt-20">
-        <div className="flex flex-col items-center text-center">
-          <h1 className="mt-6 text-5xl leading-none text-[var(--teal)] sm:text-7xl">Dashboard</h1>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-600">
-            Your profile, reflection practice, and spiritual growth — all in one calm view.
-          </p>
-        </div>
+      <main className="mx-auto w-full max-w-6xl px-4 pb-20 pt-10 sm:px-6 md:pt-15s">
 
-        <div className="mt-10 space-y-8">
+        <div className="space-y-8">
           <ProfileCard />
 
           <div className="grid grid-cols-12 gap-4">
