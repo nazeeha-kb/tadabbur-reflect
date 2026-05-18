@@ -197,7 +197,6 @@ export default function ReflectAyahPage() {
           >
             ← Back
           </Link>
-          <TafseerVisibilityToggle compact />
         </div>
 
         <section className="mt-6 space-y-6" aria-live="polite" aria-busy={loading && !ayah}>
@@ -213,17 +212,19 @@ export default function ReflectAyahPage() {
               <p className="text-xs font-semibold tracking-wide uppercase text-[var(--peach)]">
                 {formatVerseCitation(ayah)}
               </p>
+              {/* Ayah */}
               {ayah.arabicText ? (
                 <p
                   dir="rtl"
                   lang="ar"
-                  className="mt-6 text-center text-xl leading-[1.9] text-[#0f4f5f]"
+                  className="mt-6 text-center md:text-3xl text-2xl leading-[1.9] text-[#0f4f5f]"
                 >
                   {ayah.arabicText}
                 </p>
               ) : null}
+              {/* Translation */}
               {ayah.translation ? (
-                <p className="mt-5 text-center text-sm leading-relaxed text-slate-600">
+                <p className="mt-4 text-center leading-relaxed text-slate-600 border bg-slate-100 border-slate-200 rounded-xl p-4">
                   {ayah.translation}
                 </p>
               ) : null}

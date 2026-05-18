@@ -270,9 +270,9 @@ export default function ReflectionsPage() {
                     reflection={item}
                     className="min-w-0 flex-1 rounded-lg focus-visible:focus-ring"
                   >
-                    <p className="text-xs leading-snug text-[var(--peach)]">
-                      Reflection on:{" "}
-                      <span className="font-medium text-slate-700 hover:text-[var(--teal)] hover:underline">
+                    <p className="text-xs leading-snug text-[var(--peach)] hover:underline">
+                      Back to results on:{" "}
+                      <span className="font-medium text-slate-700 hover:text-[var(--teal)]">
                         &ldquo;{item.emotion || "—"}&rdquo;
                       </span>
                     </p>
@@ -304,7 +304,6 @@ export default function ReflectionsPage() {
                         return (
                           <li
                             key={ayah.id ?? ayah.verseKey ?? idx}
-                            // className="rounded-full border border-[var(--teal)]/25 bg-[var(--teal-soft)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--teal)]"
                             className="text-[var(--peach)] font-bold text-sm items-center flex gap-2" 
                           >
                             <BookOpenTextIcon/>

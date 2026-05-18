@@ -69,13 +69,13 @@ export default function RichReflectionEditor({ id, value, onChange, placeholder,
               ✎ Edit
             </button>
           </div>
-          <div className="reflection-page bg-[linear-gradient(to_right,transparent_0,transparent_30px,hsl(0,70%,85%)_30px,hsl(0,70%,95%)_31px,transparent_31px),repeating-linear-gradient(to_bottom,transparent,transparent_27px,hsl(40,50%,85%)_28px)]">
+          <div className="reflection-page bg-[repeating-linear-gradient(to_bottom,transparent,transparent_27px,hsl(40,50%,85%)_28px)]">
             <MarkdownContent>{value || ""}</MarkdownContent>
           </div>
         </div>
       ) : (
         <>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 pt-4">
             <button
               type="button"
               onClick={() => applyFormat("**")}
@@ -113,7 +113,7 @@ export default function RichReflectionEditor({ id, value, onChange, placeholder,
             onChange={(event) => onChange(event.target.value)}
             onKeyDown={onKeyDown}
             rows={rows}
-            className="reflection-page bg-[linear-gradient(to_right,transparent_0,transparent_30px,hsl(0,70%,85%)_30px,hsl(0,70%,95%)_31px,transparent_31px),repeating-linear-gradient(to_bottom,transparent,transparent_27px,hsl(40,50%,85%)_28px)] "
+            className="reflection-page bg-[repeating-linear-gradient(to_bottom,transparent,transparent_27px,hsl(40,50%,85%)_28px)]"
             placeholder={placeholder}
           />
         </>

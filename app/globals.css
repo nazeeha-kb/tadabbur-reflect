@@ -94,7 +94,7 @@
 }
 
 .reflection-page {
-  @apply w-full h-80 pl-12 mt-6 leading-[28px] text-[16px];
+  @apply w-full h-80 mt-6 leading-[28px] text-[16px];
 }
 
 .reflection-writing {

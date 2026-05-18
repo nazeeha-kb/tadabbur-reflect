@@ -140,8 +140,8 @@ export default function ReflectFlow() {
   return (
     <div className="min-h-screen">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-5xl px-4 pb-16 pt-4 sm:px-6">
-        <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--peach)]">New Reflection</p>
+      <main className="mx-auto w-full max-w-5xl px-4 pb-16 pt-15 sm:px-6">
+        <p className="text-xs font-semibold tracking-[0.25em] uppercase text-[var(--peach)]">New Reflection:</p>
         <h1 className="mt-2 text-6xl text-[var(--teal)]">{emotionQuery || "Reflection"}</h1>
         <p className="mt-3 text-sm text-slate-600">Select an ayah to reflect on.</p>
 
@@ -182,40 +182,47 @@ export default function ReflectFlow() {
                     startTransition(() => router.push(href));
                   }
                 }}
-                className={`relative block cursor-pointer rounded-[2rem] border p-6 sm:p-8 transition focus-visible:focus-ring ${
+                className={`relative block cursor-pointer group rounded-[2rem] border p-6 sm:p-8 transition focus-visible:focus-ring ${
                   reflectedKeys.has(ayah.verseKey)
                     ? "border-[var(--teal)] bg-[var(--teal-soft)] shadow-[0_18px_60px_-32px_rgba(31,107,113,0.35)]"
                     : "surface-card"
                 }`}
               >
+                {/* Check reflected */}
                 {reflectedKeys.has(ayah.verseKey) ? (
                   <span className="absolute bottom-4 right-4 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold text-[var(--teal)] shadow-sm ring-1 ring-[var(--teal)]/15">
                     Reflected
                   </span>
                 ) : null}
+                {/* Audio button */}
                 <div className="absolute right-4 top-4">
                   <AyahAudioButton verseKey={ayah.verseKey} />
                 </div>
                 <p className="text-xs font-semibold tracking-wide uppercase text-[var(--peach)]">
                   {formatVerseCitation(ayah)}
                 </p>
+                {/* Ayah */}
                 {ayah.arabicText ? (
                   <p
                     dir="rtl"
                     lang="ar"
-                    className="mt-4 text-center text-xl leading-[1.9] text-[#0f4f5f]"
+                    className="mt-4 text-2xl leading-[1.9] text-[#0f4f5f]"
                   >
                     {ayah.arabicText}
                   </p>
                 ) : null}
+                {/* Translation */}
                 {ayah.translation ? (
-                  <p className="mt-4 text-sm leading-relaxed text-slate-600">{ayah.translation}</p>
+                  <p className="mt-4 leading-relaxed text-slate-600">{ayah.translation}</p>
                 ) : null}
-                <p className="mt-5 text-xs font-medium text-[var(--teal)] opacity-0 transition group-hover:opacity-100">
+                {/* open this ayah */}
+                <p className="mt-5 text-xs font-medium text-[var(--teal)] opacity-0 transition group-hover:opacity-60">
                   Open this ayah →
                 </p>
               </article>
             ))}
+
+            {/* Pagination */}
           {!loading && !error && ayahs.length > PER_PAGE ? (
             <nav className="flex flex-wrap items-center justify-center gap-2 pt-2" aria-label="Search result pages">
               <button

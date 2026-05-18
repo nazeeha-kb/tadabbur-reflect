@@ -113,24 +113,19 @@ export default function ReflectionDetailPage() {
           <Link href="/reflections" className="font-medium text-[var(--teal)] hover:underline">
             ← My Reflections
           </Link>
-          <TafseerVisibilityToggle compact />
         </div>
       
         <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--peach)]">Edit reflection</p>
-        <ReflectionSearchLink reflection={reflectionRecord} className="mt-2 block w-full rounded-lg focus-visible:focus-ring">
-          <p className="text-sm text-slate-600">
-          Reflection on:{" "}
+        <ReflectionSearchLink reflection={reflectionRecord} className="mt-2 block w-full rounded-lg focus-visible:focus-ring py-2">
+          <p className="text-sm text-slate-600 hover:underline">
+          Back to results on:{" "}
           <span className="font-medium text-slate-800">&ldquo;{emotion || "—"}&rdquo;</span>
         </p>
         </ReflectionSearchLink>
-        <ReflectionSearchLink
-          reflection={reflectionRecord}
-          className="mt-3 block w-full rounded-lg focus-visible:focus-ring"
-        >
-          <h1 className="font-serif text-3xl text-[var(--teal)] hover:underline sm:text-4xl">
+       
+          <h1 className="font-serif text-3xl text-[var(--teal)] sm:text-4xl">
             {title.trim() || "Untitled reflection"}
           </h1>
-        </ReflectionSearchLink>
 
         <section className="mt-8 space-y-6" aria-label="Verses">
           {ayahs.map((ayah) => (
@@ -141,10 +136,18 @@ export default function ReflectionDetailPage() {
                 </p>
                 <AyahAudioButton verseKey={ayah.verseKey} />
               </div>
-              <p className="mt-5 text-right text-3xl leading-[1.85] text-[#0f4f5f] sm:text-[2rem]">
-                {ayah.arabicText}
+              {/* Ayah */}
+              <p
+                  dir="rtl"
+                  lang="ar"
+                  className="mt-6 text-center md:text-3xl text-2xl leading-[1.9] text-[#0f4f5f]"
+                >
+              {ayah.arabicText}
               </p>
-              <p className="mt-6 text-xl leading-relaxed text-slate-800">{ayah.translation}</p>
+              {/* Translation */}
+              <p className="mt-4 text-center leading-relaxed text-slate-600 border bg-slate-100 border-slate-200 rounded-xl p-4">
+              {ayah.translation}</p>
+              {/* Tafseer */}
               <AyahTafseerBlock tafseer={ayah.tafseer} className="mt-5" />
             </article>
           ))}

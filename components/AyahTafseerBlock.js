@@ -12,11 +12,14 @@ export default function AyahTafseerBlock({ tafseer, className = "" }) {
   return (
     <div className={className}>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <TafseerVisibilityToggle />
-        {showTafseer ? <TafseerSourceSelect compact /> : null}
+        <div className="flex items-center justify-between w-full"> 
+          <TafseerVisibilityToggle />
+        {showTafseer ? <TafseerSourceSelect compact className="w-fit" /> : null}
+        </div>
+       
       </div>
       {showTafseer && text ? (
-        <div className="mt-3 rounded-xl border-l-4 border-(--teal) bg-slate-50 px-4 py-3">
+        <div className="mt-6 rounded-xl border-l-4 border-(--teal) bg-slate-50 px-4 py-3">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tafsir</p>
           <p className="mt-2 text-xs text-slate-500">
             Source: {getTafseerSourceMeta(tafseerSource).label}
