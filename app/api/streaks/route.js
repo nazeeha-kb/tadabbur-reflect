@@ -1,39 +1,36 @@
 import { NextResponse } from "next/server";
-import { getStoredTokens, updateStoredTokens } from "@/lib/auth/qfPkceAuth";
-import { createQfApiClient } from "@/lib/api/qfApiClient";
+import resolveAuthUser from "@/lib/auth/resolveAuthUser";
+import getOrCreateAppUser from "@/lib/auth/getOrCreateAppUser";
+import { getSessionUser } from "@/lib/server/session";
+import { getStreakWithFallback } from "@/lib/qf/streaks";
 
 /**
- * GET /api/streaks - Fetch user streaks from Quran Foundation User API.
- * Requires user to be authenticated with QF.
+ * GET /api/streaks — QF activity streak with Firestore fallback.
  */
-export async function GET() {
+export async function GET(request) {
   try {
-    const { accessToken, refreshToken } = await getStoredTokens();
-    if (!accessToken) {
-      return NextResponse.json({ error: "Not authenticated with Quran Foundation" }, { status: 401 });
+    const auth = await resolveAuthUser(request);
+    let appUserId = auth?.appUserId || null;
+
+    if (!appUserId) {
+      const sessionUser = await getSessionUser();
+      if (sessionUser?.id && sessionUser.provider === "quran-foundation") {
+        const mapped = await getOrCreateAppUser("qf", String(sessionUser.id), {
+          email: sessionUser.email,
+          name: sessionUser.name,
+        });
+        appUserId = mapped.appUserId;
+      }
     }
 
-    const client = createQfApiClient({
-      accessToken,
-      refreshToken,
-      onTokensUpdate: async (newTokens) => {
-        await updateStoredTokens(newTokens);
-      },
-      isConfidential: true, // Adjust based on your client type
-    });
-
-    // Assuming the endpoint is GET /auth/v1/streaks
-    // Adjust based on actual API docs
-    const response = await client.fetch("/streaks");
-
-    if (!response.ok) {
-      return NextResponse.json({ error: "Failed to fetch streaks" }, { status: response.status });
+    const streak = await getStreakWithFallback({ appUserId });
+    if (!streak) {
+      return NextResponse.json({ currentStreak: 0, longestStreak: 0, source: "none" });
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json(streak);
   } catch (error) {
-    console.error("Error fetching streaks:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error(JSON.stringify({ event: "streak.fetch.error", message: String(error?.message || error) }));
+    return NextResponse.json({ currentStreak: 0, longestStreak: 0, source: "error" });
   }
 }

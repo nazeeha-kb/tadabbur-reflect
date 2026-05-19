@@ -74,6 +74,14 @@ export default function ReflectFlow() {
           status: response.status,
           ayahCount: payload?.ayahs?.length ?? 0,
         });
+        if (payload?.code === "UNAVAILABLE") {
+          if (alive) {
+            setAyahs([]);
+            setError(payload?.message || "Search is temporarily unavailable. Please try again.");
+          }
+          return;
+        }
+
         if (!response.ok) {
           const msg =
             payload?.message ||

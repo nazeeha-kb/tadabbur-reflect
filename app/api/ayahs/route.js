@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
-import {
-  getAyahsByEmotion,
-  getContentApiMode,
-  QuranSearchError,
-  SearchErrorCode,
-} from "@/lib/api/quran";
+import { getContentApiMode, QuranSearchError, SearchErrorCode } from "@/lib/api/quran";
+import { getAyahsByEmotionCached } from "@/lib/quran/sdk/searchCache";
 import { searchDebug } from "@/lib/search/searchDebug";
 
 function statusForSearchError(error) {
@@ -31,16 +27,25 @@ export async function GET(request) {
   searchDebug("api.ayahs.request", { query, mode: getContentApiMode() });
 
   try {
-    const { ayahs, themes } = await getAyahsByEmotion(query);
+    const { ayahs, themes } = await getAyahsByEmotionCached(query);
     searchDebug("api.ayahs.success", { query, ayahCount: ayahs?.length ?? 0, themeCount: themes?.length ?? 0 });
     return NextResponse.json({ ayahs, themes, code: "SUCCESS" });
   } catch (error) {
     const message = error?.message || "Search request failed.";
     const code = error instanceof QuranSearchError ? error.code : SearchErrorCode.SDK;
+
+    if (code === SearchErrorCode.SDK || code === SearchErrorCode.NETWORK) {
+      console.info(JSON.stringify({ event: "search.graceful_empty", query, code }));
+      return NextResponse.json({
+        ayahs: [],
+        themes: [],
+        code: "UNAVAILABLE",
+        message: "Search is temporarily unavailable. Please try again.",
+      });
+    }
+
     const status = statusForSearchError(error);
-
     searchDebug("api.ayahs.error", { query, code, status, message });
-
     return NextResponse.json({ code, message, ayahs: [], themes: [] }, { status });
   }
 }

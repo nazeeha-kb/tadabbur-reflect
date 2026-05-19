@@ -12,6 +12,7 @@ import RichReflectionEditor from "@/components/RichReflectionEditor";
 import { useUISettings } from "@/components/UISettingsProvider";
 import { formatVerseCitation } from "@/lib/quran/surahNames";
 import { getReflectionById, updateReflection } from "@/lib/storage/reflections";
+import SyncStatusBadge from "@/components/SyncStatusBadge";
 import { toast } from "sonner";
 import ReflectionSearchLink from "@/components/ReflectionSearchLink";
 
@@ -97,9 +98,23 @@ export default function ReflectionDetailPage() {
       return;
     }
     setUpdatedAt(new Date().toISOString());
+    setReflectionRecord((r) => ({ ...(r || {}), syncStatus: "syncing", title: title.trim(), reflectionText: reflectionText.trim(), tags }));
     toast.success("Reflection saved.");
     router.push("/reflections");
   };
+
+        // poll for updates so syncStatus changes are reflected in UI
+        useEffect(() => {
+          if (!id) return;
+        
+          const iv = setInterval(() => {
+            const r = getReflectionById(id);
+            if (r) setReflectionRecord(r);
+          }, 3000);
+        
+          return () => clearInterval(iv);
+        }, [id]);
+        
 
   if (!loaded) {
     return null;
@@ -153,29 +168,40 @@ export default function ReflectionDetailPage() {
           ))}
         </section>
 
+
         {/* Reflection section */}
         <section className="paper-bg mt-12 rounded-3xl p-6 sm:p-8 border border-[#d2c8b9] bg-[#fdfbf7]">
           <div className="w-full flex justify-between">
             <h2 className="text-3xl text-slate-700 font-semibold">Edit reflection</h2>
-            <div>
-              {createdAt ? (
-                <p className="mt-2 text-xs text-slate-500">
-                  Saved{" "}
-                  {new Date(createdAt).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}
-                </p>
-              ) : null}
-              {updatedAt ? (
-                <p className="mt-2 text-xs text-slate-500">
-                  Updated at{" "}
-                  {new Date(updatedAt).toLocaleDateString(undefined, {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
-              ) : null}
+<div>
+  {createdAt ? (
+    <p className="mt-2 text-xs text-slate-500">
+      Saved{" "}
+      {new Date(createdAt).toLocaleDateString(undefined, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })}
+    </p>
+  ) : null}
 
-            </div>
+  {updatedAt ? (
+    <p className="mt-2 text-xs text-slate-500">
+      Updated at{" "}
+      {new Date(updatedAt).toLocaleDateString(undefined, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })}
+    </p>
+  ) : null}
+
+  {reflectionRecord?.syncStatus ? (
+    <div className="mt-2">
+      <SyncStatusBadge status={reflectionRecord.syncStatus} />
+    </div>
+  ) : null}
+</div>
           </div>
           <div className="mt-6 space-y-8">
             <label htmlFor="edit-title" className="text-xs tracking-wider font-medium text-slate-600 uppercase">

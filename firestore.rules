@@ -1,0 +1,15 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // All client access is denied. Server API (Admin SDK) must be used.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// Notes:
+// - These rules assume you enable Firebase Authentication for client access.
+// - Server-side code using the Admin SDK bypasses these rules and is expected
+//   to enforce application-level auth (the app's session cookie / JWT).

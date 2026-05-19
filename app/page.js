@@ -37,7 +37,7 @@ const HOW_STEPS = [
   {
     step: "STEP 01",
     title: "Share what you're feeling",
-    body: "Enter a feeling, thought, or topic on your heart, and begin your reflection journey through relevant ayahs.",    
+    body: "Enter a feeling, thought, or topic on your heart, and begin your reflection journey through relevant ayahs.",
     cardBorder: "border-[#8FC4C4]",
     cardBg: "bg-[#EBF5F5]",
     stepColor: "text-[#3d6666]",
@@ -140,30 +140,30 @@ export default function Home() {
           </p>
         ) : null}
 
-{/* Soft background gradient */}
-<div
-  aria-hidden
-  className="pointer-events-none fixed inset-0 -z-10 h-screen w-screen overflow-hidden"
->
-  <div className="absolute -top-40 left-[6%] h-[22rem] w-[22rem] rounded-full bg-[#1f6b71]/12 blur-[100px]" />
-  
-  <div className="absolute top-12 right-[4%] h-[20rem] w-[20rem] rounded-full bg-[#d48d62]/10 blur-[100px]" />
-  
-  <div className="absolute bottom-0 left-1/2 h-48 w-[min(100%,48rem)] -translate-x-1/2 rounded-full bg-[#1f6b71]/8 blur-[80px]" />
-</div>
-    
+        {/* Soft background gradient */}
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 -z-10 h-screen w-screen overflow-hidden"
+        >
+          <div className="absolute -top-40 left-[6%] h-[22rem] w-[22rem] rounded-full bg-[#1f6b71]/12 blur-[100px]" />
+
+          <div className="absolute top-12 right-[4%] h-[20rem] w-[20rem] rounded-full bg-[#d48d62]/10 blur-[100px]" />
+
+          <div className="absolute bottom-0 left-1/2 h-48 w-[min(100%,48rem)] -translate-x-1/2 rounded-full bg-[#1f6b71]/8 blur-[80px]" />
+        </div>
+
 
         <section className="relative overflow-hidden pb-8 sm:pb-10 pt-30 sm:pt-35">
 
           <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center px-4 text-center sm:px-6">
             <p className="rounded-full bg-(--peach-soft) px-4 py-1 text-xs font-semibold tracking-[0.2em] text-(--peach) uppercase">
-              A Sanctuary For The Soul
+              Tadabbur Companion
             </p>
             <h1 className="mt-6 text-5xl leading-none text-(--teal) sm:text-7xl">
               Find solace in <span className="italic text-(--peach)">His words.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base text-slate-600 sm:text-lg">
-              Explore divine guidance tailored to your emotions and life&apos;s present journey.
+              A gentle space to reflect on the Qur’an through your emotions, thoughts, and moments in life, without pressure, only presence.
             </p>
 
             <form
@@ -171,30 +171,30 @@ export default function Home() {
               className="mt-10 flex w-full max-w-4xl flex-col justify-between items-stretch gap-3 rounded-3xl border border-border bg-white p-3 shadow-md sm:flex-row sm:rounded-full sm:py-1.5 sm:pl-4 sm:pr-1.5"
             >
               <div className="flex items-center grow">
-              <label htmlFor="emotion" className="sr-only">
-                Describe how you feel
-              </label>
-              <span className="shrink-0 text-slate-400" aria-hidden>
-                <SearchIcon className="h-5 w-5" />
-              </span>
-              <input
-                id="emotion"
-                name="emotion"
-                value={emotion}
-                onChange={(event) => setEmotion(event.target.value)}
-                placeholder="What is on your heart today?"
-                className="h-11 min-w-0 flex-1 rounded-full border-0 px-1 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
-                required
-              />
+                <label htmlFor="emotion" className="sr-only">
+                  Describe how you feel
+                </label>
+                <span className="shrink-0 text-slate-400" aria-hidden>
+                  <SearchIcon className="h-5 w-5" />
+                </span>
+                <input
+                  id="emotion"
+                  name="emotion"
+                  value={emotion}
+                  onChange={(event) => setEmotion(event.target.value)}
+                  placeholder="What is on your heart today?"
+                  className="h-11 min-w-0 flex-1 rounded-full border-0 px-1 text-sm text-slate-800 placeholder:text-slate-400 outline-none"
+                  required
+                />
               </div>
               <div className="flex sm:w-auto w-full gap-3 items-center">
-              <TafseerSourceSelect compact className="w-auto sm:grow-0 grow"/>
-              <button
-                type="submit"
-                className="h-11 shrink-0 rounded-full bg-(--peach) sm:px-6 px-10 text-sm font-semibold text-white transition hover:brightness-105 "
-              >
-                Reflect
-              </button>
+                <TafseerSourceSelect compact className="w-auto sm:grow-0 grow" />
+                <button
+                  type="submit"
+                  className="h-11 shrink-0 rounded-full bg-(--peach) sm:px-6 px-10 text-sm font-semibold text-white transition hover:brightness-105 "
+                >
+                  Reflect
+                </button>
               </div>
             </form>
           </div>

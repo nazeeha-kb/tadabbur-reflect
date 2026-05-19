@@ -72,10 +72,15 @@ export default function ReflectAyahPage() {
         if (!cached) setLoading(true);
         setError("");
 
-        const res = await fetch(
-          `/api/ayah?verseKey=${encodeURIComponent(verseKey)}&tafseer=${encodeURIComponent(tafseerSource)}`,
-          { cache: "no-store" },
-        );
+        const params = new URLSearchParams({
+          verseKey,
+          tafseer: tafseerSource,
+        });
+        if (cached?.arabicText) params.set("arabicText", cached.arabicText);
+        if (cached?.translation) params.set("translation", cached.translation);
+        if (cached?.surahName) params.set("surahName", cached.surahName);
+
+        const res = await fetch(`/api/ayah?${params.toString()}`, { cache: "no-store" });
         const payload = await res.json();
         if (!res.ok) {
           if (cached && alive) return;

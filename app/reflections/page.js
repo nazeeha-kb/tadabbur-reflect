@@ -8,6 +8,11 @@ import MarkdownContent from "@/components/MarkdownContent";
 import { SearchIcon, SlidersIcon } from "@/components/icons";
 import { formatVerseCitation } from "@/lib/quran/surahNames";
 import { deleteReflection, getStoredReflections } from "@/lib/storage/reflections";
+import { buildReflectionAuthHeaders, mapServerReflection } from "@/lib/reflections/mapServerReflection";
+
+const PAGE_SIZE = 10;
+import SyncStatusBadge from "@/components/SyncStatusBadge";
+import SyncLegend from "@/components/SyncLegend";
 import { toast } from "sonner";
 import { BookOpenTextIcon } from "@phosphor-icons/react";
 import ReflectionSearchLink from "@/components/ReflectionSearchLink";
@@ -27,6 +32,22 @@ function ayahCapsuleLabel(ayah) {
   return "";
 }
 
+function LoadMoreButton({ loadingMore, onClick }) {
+  return (
+    <div className="mt-8 flex justify-center">
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={loadingMore}
+        className="focus-ring inline-flex h-11 min-w-[10rem] items-center justify-center rounded-full border border-[var(--border)] bg-white px-6 text-sm font-medium text-slate-800 transition hover:bg-slate-50 disabled:cursor-wait disabled:opacity-60"
+        aria-busy={loadingMore}
+      >
+        {loadingMore ? "Loading…" : "Load more"}
+      </button>
+    </div>
+  );
+}
+
 function reflectionSearchBlob(item) {
   const ayahParts = (item.ayahs || []).flatMap((a) =>
     [a.translation, a.arabicText, a.surahName, String(a.ayahNumber ?? "")].filter(Boolean),
@@ -35,8 +56,24 @@ function reflectionSearchBlob(item) {
   return [item.emotion, item.title, item.reflectionText, tagStr, ...ayahParts].join(" ").toLowerCase();
 }
 
+function mergeSyncStatusFromLocal(serverList) {
+  const local = getStoredReflections();
+  const byId = new Map(local.map((r) => [r.id, r]));
+  return serverList.map((r) => {
+    const localRow = byId.get(r.id);
+    if (!localRow?.syncStatus) return r;
+    return { ...r, syncStatus: localRow.syncStatus };
+  });
+}
+
 export default function ReflectionsPage() {
   const [reflections, setReflections] = useState([]);
+  const [useServerList, setUseServerList] = useState(false);
+  const [nextCursor, setNextCursor] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [localVisibleCount, setLocalVisibleCount] = useState(PAGE_SIZE);
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
@@ -44,9 +81,58 @@ export default function ReflectionsPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
   const filterRef = useRef(null);
+  const useServerListRef = useRef(false);
 
   useEffect(() => {
-    setReflections(getStoredReflections());
+    let alive = true;
+
+    async function loadInitial() {
+      setLoadingInitial(true);
+      try {
+        const headers = await buildReflectionAuthHeaders();
+        const res = await fetch(`/api/reflections?limit=${PAGE_SIZE}`, {
+          credentials: "include",
+          headers,
+        });
+
+        if (res.ok) {
+          const payload = await res.json();
+          if (!alive) return;
+          const mapped = (payload.reflections || []).map(mapServerReflection).filter(Boolean);
+          setReflections(mergeSyncStatusFromLocal(mapped));
+          setNextCursor(payload.nextCursor || null);
+          setHasMore(Boolean(payload.hasMore));
+          useServerListRef.current = true;
+          setUseServerList(true);
+          setLoadingInitial(false);
+          return;
+        }
+      } catch {
+        /* fall through to local */
+      }
+
+      if (!alive) return;
+      useServerListRef.current = false;
+      setUseServerList(false);
+      const local = getStoredReflections();
+      setReflections(local);
+      setHasMore(local.length > PAGE_SIZE);
+      setLoadingInitial(false);
+    }
+
+    void loadInitial();
+
+    const id = setInterval(() => {
+      setReflections((prev) => {
+        if (useServerListRef.current) return mergeSyncStatusFromLocal(prev);
+        return getStoredReflections();
+      });
+    }, 3000);
+
+    return () => {
+      alive = false;
+      clearInterval(id);
+    };
   }, []);
 
   useEffect(() => {
@@ -66,6 +152,33 @@ export default function ReflectionsPage() {
     reflections.forEach((r) => (r.tags || []).forEach((t) => s.add(t)));
     return [...s].sort((a, b) => a.localeCompare(b));
   }, [reflections]);
+
+  const loadMore = async () => {
+    if (useServerList) {
+      if (!hasMore || !nextCursor || loadingMore) return;
+      setLoadingMore(true);
+      try {
+        const headers = await buildReflectionAuthHeaders();
+        const res = await fetch(
+          `/api/reflections?limit=${PAGE_SIZE}&cursor=${encodeURIComponent(nextCursor)}`,
+          { credentials: "include", headers },
+        );
+        if (res.ok) {
+          const payload = await res.json();
+          const mapped = (payload.reflections || []).map(mapServerReflection).filter(Boolean);
+          setReflections((prev) => mergeSyncStatusFromLocal([...prev, ...mapped]));
+          setNextCursor(payload.nextCursor || null);
+          setHasMore(Boolean(payload.hasMore));
+        }
+      } finally {
+        setLoadingMore(false);
+      }
+      return;
+    }
+
+    setLocalVisibleCount((n) => n + PAGE_SIZE);
+    setHasMore(localVisibleCount + PAGE_SIZE < reflections.length);
+  };
 
   const filtered = useMemo(() => {
     let list = reflections;
@@ -93,8 +206,20 @@ export default function ReflectionsPage() {
       });
     }
 
+    if (!useServerList) {
+      list = list.slice(0, localVisibleCount);
+    }
+
     return list;
-  }, [reflections, searchQuery, dateFrom, dateTo, selectedTags]);
+  }, [reflections, searchQuery, dateFrom, dateTo, selectedTags, useServerList, localVisibleCount]);
+
+  const showLoadMore = useServerList
+    ? hasMore && !searchQuery && !dateFrom && !dateTo && selectedTags.length === 0
+    : !searchQuery &&
+      !dateFrom &&
+      !dateTo &&
+      selectedTags.length === 0 &&
+      localVisibleCount < reflections.length;
 
   const filterCount = [dateFrom, dateTo].filter(Boolean).length + selectedTags.length;
   const hasActiveFilters = filterCount > 0;
@@ -140,6 +265,7 @@ export default function ReflectionsPage() {
           <div>
             <h1 className="text-5xl text-[var(--teal)]">My Reflections</h1>
             <p className="mt-2 text-sm text-slate-600">Your spiritual journey, captured verse by verse.</p>
+            <SyncLegend />
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
@@ -253,12 +379,18 @@ export default function ReflectionsPage() {
           </section>
         ) : null}
 
-        {reflections.length === 0 ? (
+        {loadingInitial ? (
+          <section className="surface-card mt-8 p-10 text-center" aria-busy="true">
+            <p className="text-sm text-slate-500">Loading reflections…</p>
+          </section>
+        ) : null}
+
+        {!loadingInitial && reflections.length === 0 ? (
           <section className="surface-card mt-8 p-10 text-center">
             <h2 className="text-3xl text-slate-800">No reflections yet</h2>
             <p className="mt-3 text-sm text-slate-600">Start your first reflection and it will appear here.</p>
           </section>
-        ) : filtered.length > 0 ? (
+        ) : !loadingInitial && filtered.length > 0 ? (
           <section className="mt-8 grid gap-4 md:grid-cols-2" aria-label="Saved reflections">
             {filtered.map((item) => (
               <article
@@ -278,6 +410,7 @@ export default function ReflectionsPage() {
                     </p>
                   </ReflectionSearchLink>
                   <div className="flex shrink-0 items-center gap-2">
+                    <SyncStatusBadge status={item.syncStatus} />
                     <p className="text-xs font-medium text-slate-500">{formatDate(item.createdAt)}</p>
                     <button
                       type="button"
@@ -351,6 +484,10 @@ export default function ReflectionsPage() {
               </article>
             ))}
           </section>
+        ) : null}
+
+        {showLoadMore ? (
+          <LoadMoreButton loadingMore={loadingMore} onClick={loadMore} />
         ) : null}
       </main>
     </div>
