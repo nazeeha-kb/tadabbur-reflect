@@ -163,7 +163,7 @@ export default function Home() {
               Find solace in <span className="italic text-(--peach)">His words.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base text-slate-600 sm:text-lg">
-              A gentle space to reflect on the Qur’an through your emotions, thoughts, and moments in life, without pressure, only presence.
+              A gentle space to reflect on the Qur’an through your emotions and moments.
             </p>
 
             <form
@@ -191,7 +191,7 @@ export default function Home() {
                 <TafseerSourceSelect compact className="w-auto sm:grow-0 grow" />
                 <button
                   type="submit"
-                  className="h-11 shrink-0 rounded-full bg-(--peach) sm:px-6 px-10 text-sm font-semibold text-white transition hover:brightness-105 "
+                  className="h-11 shrink-0 rounded-full bg-(--peach) px-6 text-sm font-semibold text-white transition hover:brightness-105 "
                 >
                   Reflect
                 </button>

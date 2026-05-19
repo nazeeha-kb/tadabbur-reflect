@@ -27,7 +27,7 @@ function getSavedShowTafseer() {
 
 export function UISettingsProvider({ children }) {
   const [tafseerSource, setTafseerSource] = useState(DEFAULT_TAFSEER_SOURCE);
-  const [showTafseer, setShowTafseerState] = useState(true);
+  const [showTafseer, setShowTafseerState] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {

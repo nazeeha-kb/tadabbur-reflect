@@ -25,10 +25,10 @@ export default function SiteHeader() {
   const navLinks = [
     ...(isAuthenticated
       ? [
-          { href: "/", label: t("navHome"), active: isHome },
-          { href: "/reflections", label: t("navReflections"), active: isReflections },
-          { href: "/dashboard", label: t("navDashboard"), active: isDashboard },
-        ]
+        { href: "/", label: t("navHome"), active: isHome },
+        { href: "/reflections", label: t("navReflections"), active: isReflections },
+        { href: "/dashboard", label: t("navDashboard"), active: isDashboard },
+      ]
       : []),
   ];
 
@@ -119,9 +119,11 @@ export default function SiteHeader() {
               >
                 Sign Out
               </button>
-              <div className="flex h-9 min-w-9 items-center justify-center rounded-full bg-(--teal) px-2 text-xs font-semibold text-white">
-                {(user?.name || user?.email || "U").slice(0, 1).toUpperCase()}
-              </div>
+              <Link href="/dashboard">
+                <div className="flex h-9 min-w-9 items-center justify-center rounded-full bg-(--teal) px-2 text-xs font-semibold text-white cursor-pointer">
+                  {(user?.name || user?.email || "U").slice(0, 1).toUpperCase()}
+                </div>
+              </Link>
             </div>
           )}
         </div>

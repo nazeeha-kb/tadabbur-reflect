@@ -15,7 +15,7 @@ function wrapSelection(value, selectionStart, selectionEnd, marker) {
 
 export default function RichReflectionEditor({ id, value, onChange, placeholder, rows = 10, createdAt, updatedAt }) {
   const textAreaRef = useRef(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
 
   const applyFormat = useCallback(
     (marker) => {
@@ -98,10 +98,10 @@ export default function RichReflectionEditor({ id, value, onChange, placeholder,
               type="button"
               onClick={() => setIsEditing(false)}
               className="ml-auto inline-flex h-9 min-w-9 items-center justify-center rounded-lg border border-gray-400 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
-              aria-label="Done"
-              title="Done editing"
+              aria-label="preview"
+              title="preview"
             >
-              ✓ Done
+              ✓ Preview
             </button>
           </div>
           

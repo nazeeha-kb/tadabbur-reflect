@@ -8,7 +8,6 @@ import SiteHeader from "@/components/SiteHeader";
 import TagInput from "@/components/TagInput";
 import AyahTafseerBlock from "@/components/AyahTafseerBlock";
 import AyahsLoadingSkeleton from "@/components/AyahsLoadingSkeleton";
-import TafseerVisibilityToggle from "@/components/TafseerVisibilityToggle";
 import RichReflectionEditor from "@/components/RichReflectionEditor";
 import { useUISettings } from "@/components/UISettingsProvider";
 import { formatVerseCitation } from "@/lib/quran/surahNames";
@@ -238,7 +237,6 @@ export default function ReflectAyahPage() {
           >
             ← Back
           </Link>
-          <TafseerVisibilityToggle compact />
         </div>
 
         <section className="mt-6 space-y-6" aria-live="polite" aria-busy={loading && !ayah}>
@@ -258,13 +256,13 @@ export default function ReflectAyahPage() {
                 <p
                   dir="rtl"
                   lang="ar"
-                  className="mt-6 text-center text-xl leading-[1.9] text-[#0f4f5f]"
+                  className="mt-6 text-center sm:text-3xl text-2xl leading-[1.9] text-[#0f4f5f]"
                 >
                   {ayah.arabicText}
                 </p>
               ) : null}
               {ayah.translation ? (
-                <p className="mt-5 text-center text-sm leading-relaxed text-slate-600">
+              <p className="mt-4 text-center leading-relaxed text-slate-600 border bg-slate-100 border-slate-200 rounded-xl p-4">
                   {ayah.translation}
                 </p>
               ) : null}

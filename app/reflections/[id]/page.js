@@ -7,7 +7,6 @@ import SiteHeader from "@/components/SiteHeader";
 import TagInput from "@/components/TagInput";
 import AyahAudioButton from "@/components/AyahAudioButton";
 import AyahTafseerBlock from "@/components/AyahTafseerBlock";
-import TafseerVisibilityToggle from "@/components/TafseerVisibilityToggle";
 import RichReflectionEditor from "@/components/RichReflectionEditor";
 import { useUISettings } from "@/components/UISettingsProvider";
 import { formatVerseCitation } from "@/lib/quran/surahNames";

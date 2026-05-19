@@ -19,10 +19,10 @@ import {
   getServerReflectionId,
 } from "@/lib/reflections/identity";
 import { buildReflectionAuthHeaders, mapServerReflection } from "@/lib/reflections/mapServerReflection";
-
+import { Trash2Icon } from "lucide-react";
 const PAGE_SIZE = 10;
 import SyncStatusBadge from "@/components/SyncStatusBadge";
-import SyncLegend from "@/components/SyncLegend";
+// import SyncLegend from "@/components/SyncLegend";
 import { toast } from "sonner";
 import { BookOpenTextIcon } from "@phosphor-icons/react";
 import ReflectionSearchLink from "@/components/ReflectionSearchLink";
@@ -88,10 +88,10 @@ function mergeSyncStatusFromLocal(serverList) {
     const localRow = localByServerId.get(serverId);
     const combined = localRow
       ? {
-          ...row,
-          firebaseSyncStatus: localRow.firebaseSyncStatus ?? row.firebaseSyncStatus,
-          qfSyncStatus: localRow.qfSyncStatus ?? row.qfSyncStatus,
-        }
+        ...row,
+        firebaseSyncStatus: localRow.firebaseSyncStatus ?? row.firebaseSyncStatus,
+        qfSyncStatus: localRow.qfSyncStatus ?? row.qfSyncStatus,
+      }
       : row;
 
     merged.push({
@@ -273,10 +273,10 @@ export default function ReflectionsPage() {
   const showLoadMore = useServerList
     ? hasMore && !searchQuery && !dateFrom && !dateTo && selectedTags.length === 0
     : !searchQuery &&
-      !dateFrom &&
-      !dateTo &&
-      selectedTags.length === 0 &&
-      localVisibleCount < dedupedReflections.length;
+    !dateFrom &&
+    !dateTo &&
+    selectedTags.length === 0 &&
+    localVisibleCount < dedupedReflections.length;
 
   const filterCount = [dateFrom, dateTo].filter(Boolean).length + selectedTags.length;
   const hasActiveFilters = filterCount > 0;
@@ -322,7 +322,7 @@ export default function ReflectionsPage() {
           <div>
             <h1 className="text-5xl text-[var(--teal)]">My Reflections</h1>
             <p className="mt-2 text-sm text-slate-600">Your spiritual journey, captured verse by verse.</p>
-            <SyncLegend />
+            {/* <SyncLegend /> */}
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
@@ -467,42 +467,36 @@ export default function ReflectionsPage() {
                     </p>
                   </ReflectionSearchLink>
                   <div className="flex shrink-0 items-center gap-2">
-                    <SyncStatusBadge status={item.syncStatus} />
-                    <p className="text-xs font-medium text-slate-500">{formatDate(item.createdAt)}</p>
-                    <button
-                      type="button"
-                      onClick={() => setPendingDeleteId(item.id)}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-md text-rose-600 transition hover:bg-rose-50 hover:text-rose-700 focus-visible:focus-ring"
-                      aria-label={`Delete reflection ${item.title || "untitled reflection"}`}
-                      title="Delete reflection"
-                    >
-                      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                        <path d="M3 6h18" strokeLinecap="round" />
-                        <path d="M8 6V4h8v2" strokeLinecap="round" />
-                        <path d="M6 6l1 14h10l1-14" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M10 10v7M14 10v7" strokeLinecap="round" />
-                      </svg>
-                    </button>
+                      <p className="text-xs font-medium text-slate-500">{formatDate(item.createdAt)}</p>
+                      <button
+                        type="button"
+                        onClick={() => setPendingDeleteId(item.id)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-rose-600 transition hover:bg-rose-50 hover:text-rose-700 focus-visible:focus-ring"
+                        aria-label={`Delete reflection ${item.title || "untitled reflection"}`}
+                        title="Delete reflection"
+                      >
+                        <Trash2Icon className="size-4" />
+                      </button>
                   </div>
                 </div>
                 {(item.ayahs || []).length > 0 ? (
-                    <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Verses in this reflection">
-                      {(item.ayahs || []).map((ayah, idx) => {
-                        const label = ayahCapsuleLabel(ayah);
-                        if (!label) return null;
-                        // Ayah
-                        return (
-                          <li
-                            key={ayah.id ?? ayah.verseKey ?? idx}
-                            className="text-[var(--peach)] font-bold text-sm items-center flex gap-2" 
-                          >
-                            <BookOpenTextIcon/>
-                            <span>{label}</span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  ) : null}
+                  <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Verses in this reflection">
+                    {(item.ayahs || []).map((ayah, idx) => {
+                      const label = ayahCapsuleLabel(ayah);
+                      if (!label) return null;
+                      // Ayah
+                      return (
+                        <li
+                          key={ayah.id ?? ayah.verseKey ?? idx}
+                          className="text-[var(--peach)] font-bold text-sm items-center flex gap-2"
+                        >
+                          <BookOpenTextIcon />
+                          <span>{label}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : null}
                 <div className="mt-4 flex flex-1 flex-col gap-2">
                   {item.title ? (
                     <ReflectionSearchLink
@@ -518,24 +512,28 @@ export default function ReflectionsPage() {
                     href={`/reflections/${getServerReflectionId(item) || item.id}`}
                     className="focus-visible:focus-ring flex flex-col flex-1 gap-2 justify-between"
                   >
-                  <div className="line-clamp-4 overflow-hidden text-sm">
-                    <MarkdownContent>{item.reflectionText || ""}</MarkdownContent>
-                  </div>
-                  <p className="pt-2 text-xs text-slate-500">
-                    Edited on: {formatDate(item.updatedAt || item.createdAt)}
-                  </p>
-                  {(item.tags || []).length > 0 ? (
-                    <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Your tags">
-                      {(item.tags || []).slice(0, 4).map((t) => (
-                        <li
-                          key={t}
-                          className="rounded-full border border-[var(--border)] bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-600"
-                        >
-                          {t}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
+                    <div className="line-clamp-4 overflow-hidden text-sm">
+                      <MarkdownContent>{item.reflectionText || ""}</MarkdownContent>
+                    </div>
+                    <p className="pt-2 text-xs text-slate-500">
+                      Edited on: {formatDate(item.updatedAt || item.createdAt)}
+                    </p>
+                    <div className="flex w-full justify-between items-end">
+                      {(item.tags || []).length > 0 ? (
+                        <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Your tags">
+                          {(item.tags || []).slice(0, 4).map((t) => (
+                            <li
+                              key={t}
+                              className="rounded-full border border-[var(--border)] bg-slate-50 px-2 py-0.5 text-[11px] font-medium text-slate-600"
+                            >
+                              {t}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                      {/* <SyncStatusBadge status={item.syncStatus} /> */}
+                    </div>
+
                   </Link>
                 </div>
               </article>

@@ -12,9 +12,9 @@ export default function AyahTafseerBlock({ tafseer, className = "" }) {
   return (
     <div className={className}>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center justify-between w-full"> 
+        <div className="md:flex-row flex flex-col md:items-center items-start md:justify-between w-full"> 
           <TafseerVisibilityToggle />
-        {showTafseer ? <TafseerSourceSelect compact className="w-fit" /> : null}
+        {showTafseer ? <TafseerSourceSelect compact className="w-fit md:mt-0 mt-5" /> : null}
         </div>
        
       </div>
