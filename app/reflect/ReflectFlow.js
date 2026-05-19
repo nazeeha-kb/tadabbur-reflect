@@ -15,6 +15,7 @@ import { cacheVerseForReflection } from "@/lib/reflections/verseCache";
 const PER_PAGE = 8;
 
 export default function ReflectFlow() {
+  console.log("ENV KEYS:", Object.keys(process.env).filter(k => k.includes("QURAN")));
   const searchParams = useSearchParams();
   const router = useRouter();
   const emotionQuery = useMemo(() => searchParams.get("q")?.trim() || "", [searchParams]);
