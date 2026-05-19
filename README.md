@@ -1,4 +1,4 @@
-# Inshirah: Quran Reflection App
+# Tadabbur: Quran Reflection App
 
 [![Next.js](https://img.shields.io/badge/Next.js-15.2.6-black)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.0.0-blue)](https://reactjs.org/)
@@ -17,7 +17,7 @@ In today's fast-paced world, many Muslims struggle to maintain consistent Quran 
 
 ## 🚀 Solution
 
-Inshirah provides a seamless platform for Quran reflection with:
+Tadabbur provides a seamless platform for Quran reflection with:
 - **Guided Verse Selection**: Intuitive interface for browsing and selecting verses
 - **Rich Reflection Editor**: Live markdown preview for thoughtful journaling
 - **Personalized Insights**: AI-powered emotion-based verse recommendations
@@ -72,8 +72,8 @@ Inshirah provides a seamless platform for Quran reflection with:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/inshirah-quran-reflect-app.git
-   cd inshirah-quran-reflect-app
+   git clone https://github.com/your-username/tadabbur-reflect.git
+   cd tadabbur reflect
    ```
 
 2. **Install dependencies**
