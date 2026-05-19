@@ -127,7 +127,9 @@ export default function ReflectFlow() {
     return () => {
       alive = false;
     };
-  }, [emotionQuery, tafseerSource]);
+    // Search results are tafsir-agnostic; do not refetch when tafseerSource changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional
+  }, [emotionQuery]);
 
   useEffect(() => {
     const keys = new Set(

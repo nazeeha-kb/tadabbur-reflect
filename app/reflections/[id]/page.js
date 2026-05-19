@@ -11,6 +11,7 @@ import TafseerVisibilityToggle from "@/components/TafseerVisibilityToggle";
 import RichReflectionEditor from "@/components/RichReflectionEditor";
 import { useUISettings } from "@/components/UISettingsProvider";
 import { formatVerseCitation } from "@/lib/quran/surahNames";
+import { REFLECTION_STORAGE_EVENT, getServerReflectionId } from "@/lib/reflections/identity";
 import { getReflectionById, updateReflection } from "@/lib/storage/reflections";
 import SyncStatusBadge from "@/components/SyncStatusBadge";
 import { toast } from "sonner";
@@ -55,6 +56,17 @@ export default function ReflectionDetailPage() {
   }, [id, router]);
 
   useEffect(() => {
+    function onIdentityReplaced(event) {
+      const { tempId, serverId } = event.detail || {};
+      if (tempId && serverId && id === tempId) {
+        router.replace(`/reflections/${serverId}`);
+      }
+    }
+    window.addEventListener(REFLECTION_STORAGE_EVENT, onIdentityReplaced);
+    return () => window.removeEventListener(REFLECTION_STORAGE_EVENT, onIdentityReplaced);
+  }, [id, router]);
+
+  useEffect(() => {
     if (!loaded || ayahs.length === 0 || !showTafseer) return;
     const syncKey = `${tafseerSource}:${ayahs.length}`;
     if (lastTafseerSync.current === syncKey) return;
@@ -88,7 +100,8 @@ export default function ReflectionDetailPage() {
 
   const handleSave = () => {
     if (!reflectionText.trim()) return;
-    const ok = updateReflection(id, {
+    const recordId = getServerReflectionId(reflectionRecord) || id;
+    const ok = updateReflection(recordId, {
       title: title.trim(),
       reflectionText: reflectionText.trim(),
       tags,

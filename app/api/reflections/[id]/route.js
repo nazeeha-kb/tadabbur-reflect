@@ -5,7 +5,7 @@ import { updateReflection, deleteReflection } from "@/lib/db/reflections";
 export async function PATCH(request, { params }) {
   const auth = await resolveAuthUser(request);
   if (!auth) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
-  const { id } = params;
+  const { id } = await params;
   let body;
   try {
     body = await request.json();
@@ -25,7 +25,7 @@ export async function PATCH(request, { params }) {
 export async function DELETE(request, { params }) {
   const auth = await resolveAuthUser(request);
   if (!auth) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
-  const { id } = params;
+  const { id } = await params;
   try {
     await deleteReflection(id, auth.appUserId);
     return NextResponse.json({ ok: true, id });

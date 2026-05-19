@@ -7,6 +7,7 @@ import { createContext, useContext, useLayoutEffect, useMemo, useRef, useState }
 import { toast } from "sonner";
 
 import { authClientLog } from "@/lib/auth/clientAuthDebug";
+import { fetchSessionCached, invalidateSessionCache } from "@/lib/auth/sessionClient";
 import { clearGuestProfile, loadGuestProfile } from "@/lib/profile/guestProfile";
 
 
@@ -235,23 +236,11 @@ export function AuthProvider({ children }) {
 
     try {
 
-      const sessionResponse = await fetch("/api/auth/session", {
+      const data = await fetchSessionCached();
 
-        cache: "no-store",
+      authClientLog("hydrate.response", { authenticated: Boolean(data?.authenticated) });
 
-        credentials: "include",
-
-      });
-
-      authClientLog("hydrate.response", { ok: sessionResponse.ok, status: sessionResponse.status });
-
-
-
-      if (sessionResponse.ok) {
-
-        const data = await sessionResponse.json();
-
-        if (data.authenticated && data.user) {
+      if (data?.authenticated && data.user) {
 
           clearGuestStorage();
 
@@ -281,7 +270,7 @@ export function AuthProvider({ children }) {
 
       }
 
-    } catch (error) {
+    catch (error) {
 
       authClientLog("hydrate.error", { message: String(error?.message || error) });
 
@@ -460,6 +449,7 @@ export function AuthProvider({ children }) {
     const wasRegistered = user?.kind !== "guest";
 
     clearGuestStorage();
+    invalidateSessionCache();
 
     setUser(null);
 
@@ -519,14 +509,11 @@ export function AuthProvider({ children }) {
 
     }),
 
-    [authReady, authModal, streak, usedFallback, user],
-
+    
+    [authReady, authModal, streak, usedFallback, user]
   );
-
-
-
+  
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-
 }
 
 

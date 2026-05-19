@@ -7,7 +7,17 @@ import ConfirmModal from "@/components/ConfirmModal";
 import MarkdownContent from "@/components/MarkdownContent";
 import { SearchIcon, SlidersIcon } from "@/components/icons";
 import { formatVerseCitation } from "@/lib/quran/surahNames";
-import { deleteReflection, getStoredReflections } from "@/lib/storage/reflections";
+import {
+  deleteReflection,
+  dedupeReflections,
+  getStoredReflections,
+  retryFailedReflectionSyncs,
+} from "@/lib/storage/reflections";
+import {
+  REFLECTION_STORAGE_EVENT,
+  deriveDisplaySyncStatus,
+  getServerReflectionId,
+} from "@/lib/reflections/identity";
 import { buildReflectionAuthHeaders, mapServerReflection } from "@/lib/reflections/mapServerReflection";
 
 const PAGE_SIZE = 10;
@@ -58,12 +68,47 @@ function reflectionSearchBlob(item) {
 
 function mergeSyncStatusFromLocal(serverList) {
   const local = getStoredReflections();
-  const byId = new Map(local.map((r) => [r.id, r]));
-  return serverList.map((r) => {
-    const localRow = byId.get(r.id);
-    if (!localRow?.syncStatus) return r;
-    return { ...r, syncStatus: localRow.syncStatus };
-  });
+  const localByServerId = new Map();
+  for (const row of local) {
+    const sid = getServerReflectionId(row);
+    if (sid) localByServerId.set(sid, row);
+  }
+
+  const serverRows = (Array.isArray(serverList) ? serverList : []).filter((row) => getServerReflectionId(row));
+  const seenKeys = new Set();
+  const merged = [];
+
+  for (const row of serverRows) {
+    const serverId = getServerReflectionId(row);
+    if (!serverId) continue;
+    const key = `id:${serverId}`;
+    if (seenKeys.has(key)) continue;
+    seenKeys.add(key);
+
+    const localRow = localByServerId.get(serverId);
+    const combined = localRow
+      ? {
+          ...row,
+          firebaseSyncStatus: localRow.firebaseSyncStatus ?? row.firebaseSyncStatus,
+          qfSyncStatus: localRow.qfSyncStatus ?? row.qfSyncStatus,
+        }
+      : row;
+
+    merged.push({
+      ...combined,
+      syncStatus: deriveDisplaySyncStatus(combined.firebaseSyncStatus, combined.qfSyncStatus),
+    });
+  }
+
+  const pendingLocal = local.filter((r) => !getServerReflectionId(r));
+  for (const row of pendingLocal) {
+    const key = `fallback:${row.createdAt}|${row.verseKey}|${String(row.reflectionText || row.reflection || "").trim()}`;
+    if (seenKeys.has(key)) continue;
+    seenKeys.add(key);
+    merged.unshift(row);
+  }
+
+  return merged;
 }
 
 export default function ReflectionsPage() {
@@ -114,24 +159,34 @@ export default function ReflectionsPage() {
       if (!alive) return;
       useServerListRef.current = false;
       setUseServerList(false);
-      const local = getStoredReflections();
+      const local = dedupeReflections(getStoredReflections());
       setReflections(local);
       setHasMore(local.length > PAGE_SIZE);
       setLoadingInitial(false);
     }
 
     void loadInitial();
+    retryFailedReflectionSyncs();
 
     const id = setInterval(() => {
       setReflections((prev) => {
         if (useServerListRef.current) return mergeSyncStatusFromLocal(prev);
         return getStoredReflections();
       });
-    }, 3000);
+    }, 5000);
+
+    const onStorage = () => {
+      setReflections((prev) => {
+        if (useServerListRef.current) return mergeSyncStatusFromLocal(prev);
+        return getStoredReflections();
+      });
+    };
+    window.addEventListener(REFLECTION_STORAGE_EVENT, onStorage);
 
     return () => {
       alive = false;
       clearInterval(id);
+      window.removeEventListener(REFLECTION_STORAGE_EVENT, onStorage);
     };
   }, []);
 
@@ -147,11 +202,13 @@ export default function ReflectionsPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [filtersOpen]);
 
+  const dedupedReflections = useMemo(() => dedupeReflections(reflections), [reflections]);
+
   const allTags = useMemo(() => {
     const s = new Set();
-    reflections.forEach((r) => (r.tags || []).forEach((t) => s.add(t)));
+    dedupedReflections.forEach((r) => (r.tags || []).forEach((t) => s.add(t)));
     return [...s].sort((a, b) => a.localeCompare(b));
-  }, [reflections]);
+  }, [dedupedReflections]);
 
   const loadMore = async () => {
     if (useServerList) {
@@ -181,7 +238,7 @@ export default function ReflectionsPage() {
   };
 
   const filtered = useMemo(() => {
-    let list = reflections;
+    let list = dedupedReflections;
 
     const q = searchQuery.trim().toLowerCase();
     if (q) {
@@ -219,7 +276,7 @@ export default function ReflectionsPage() {
       !dateFrom &&
       !dateTo &&
       selectedTags.length === 0 &&
-      localVisibleCount < reflections.length;
+      localVisibleCount < dedupedReflections.length;
 
   const filterCount = [dateFrom, dateTo].filter(Boolean).length + selectedTags.length;
   const hasActiveFilters = filterCount > 0;
@@ -394,7 +451,7 @@ export default function ReflectionsPage() {
           <section className="mt-8 grid gap-4 md:grid-cols-2" aria-label="Saved reflections">
             {filtered.map((item) => (
               <article
-                key={item.id}
+                key={item.tempId || item.serverId || item.id}
                 className="group rounded-3xl border border-[var(--border)] bg-[linear-gradient(180deg,#ffffff_0%,#fbfaf8_100%)] p-6 text-left shadow-[0_10px_30px_-22px_rgba(15,23,42,0.35)] transition hover:border-[var(--teal)]/40 hover:shadow-md flex flex-col"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -458,7 +515,7 @@ export default function ReflectionsPage() {
                     </ReflectionSearchLink>
                   ) : null}
                   <Link
-                    href={`/reflections/${item.id}`}
+                    href={`/reflections/${getServerReflectionId(item) || item.id}`}
                     className="focus-visible:focus-ring flex flex-col flex-1 gap-2 justify-between"
                   >
                   <div className="line-clamp-4 overflow-hidden text-sm">

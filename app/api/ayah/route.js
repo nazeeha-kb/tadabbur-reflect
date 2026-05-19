@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAyahByVerseKey, QuranSearchError, SearchErrorCode } from "@/lib/api/quran";
+import { fetchTafsirForVerseWithFallback } from "@/lib/quran/sdk/tafsir";
 
 function statusForSearchError(error) {
   if (!(error instanceof QuranSearchError)) return 500;
@@ -16,9 +17,24 @@ function statusForSearchError(error) {
   }
 }
 
+async function buildPartialAyah(verseKey, { arabicText, translation, surahName, tafseerSource }) {
+  const partial = {
+    id: verseKey,
+    verseKey,
+    arabicText: arabicText || "",
+    translation: translation || "",
+    surahName: surahName || "",
+    tafseer: null,
+  };
+  if (tafseerSource) {
+    partial.tafseer = await fetchTafsirForVerseWithFallback(verseKey, tafseerSource);
+  }
+  return partial;
+}
+
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const verseKey = searchParams.get("verseKey");
+  const verseKey = searchParams.get("verseKey")?.trim() || "";
   const tafseerSource = searchParams.get("tafseer");
   const arabicText = searchParams.get("arabicText");
   const translation = searchParams.get("translation");
@@ -34,6 +50,13 @@ export async function GET(request) {
         }
       : null;
 
+  if (!verseKey.includes(":")) {
+    return NextResponse.json(
+      { code: SearchErrorCode.INVALID_QUERY, message: "Invalid verse key.", ayah: null },
+      { status: 400 },
+    );
+  }
+
   try {
     const ayah = await getAyahByVerseKey(verseKey, {
       tafseerSourceId: tafseerSource || undefined,
@@ -41,28 +64,34 @@ export async function GET(request) {
     });
     return NextResponse.json({ ayah, code: "SUCCESS" });
   } catch (error) {
-    if (prefill?.verseKey && prefill.arabicText && prefill.translation) {
-      const tafseer = tafseerSource
-        ? await import("@/lib/quran/sdk/tafsir").then((m) =>
-            m.fetchTafsirForVerseWithFallback(verseKey, tafseerSource),
-          )
-        : null;
-      return NextResponse.json({
-        ayah: {
-          id: verseKey,
-          verseKey,
-          arabicText: prefill.arabicText,
-          translation: prefill.translation,
-          surahName: prefill.surahName || "",
-          tafseer,
-        },
-        code: "PARTIAL",
+    if (prefill?.arabicText || prefill?.translation) {
+      const ayah = await buildPartialAyah(verseKey, {
+        ...prefill,
+        tafseerSource: tafseerSource || undefined,
       });
+      return NextResponse.json({ ayah, code: "PARTIAL" });
     }
 
     const code = error instanceof QuranSearchError ? error.code : SearchErrorCode.SDK;
     const message = error?.message || "Failed to fetch ayah.";
-    const status = statusForSearchError(error);
-    return NextResponse.json({ code, message, ayah: null }, { status });
+
+    if (code !== SearchErrorCode.INVALID_QUERY) {
+      const ayah = await buildPartialAyah(verseKey, {
+        arabicText: "",
+        translation: "",
+        surahName: "",
+        tafseerSource: tafseerSource || undefined,
+      });
+      return NextResponse.json({
+        ayah,
+        code: "PARTIAL",
+        message: "Verse text unavailable; tafsir loaded when possible.",
+      });
+    }
+
+    return NextResponse.json(
+      { code, message, ayah: null },
+      { status: statusForSearchError(error) },
+    );
   }
 }

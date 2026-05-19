@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import AyahAudioButton from "@/components/AyahAudioButton";
@@ -42,11 +42,14 @@ export default function ReflectAyahPage() {
 
   const [ayah, setAyah] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tafseerLoading, setTafseerLoading] = useState(false);
   const [error, setError] = useState("");
   const [reflectionText, setReflectionText] = useState("");
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
   const [saving, setSaving] = useState(false);
+  const createInFlight = useRef(false);
+  const [, startTransition] = useTransition();
   const didPrefillTags = useRef(false);
 
   useEffect(() => {
@@ -67,36 +70,28 @@ export default function ReflectAyahPage() {
     }
 
     let alive = true;
-    async function loadFullVerse() {
+    async function loadVerseText() {
       try {
         if (!cached) setLoading(true);
         setError("");
 
-        const params = new URLSearchParams({
-          verseKey,
-          tafseer: tafseerSource,
-        });
+        const params = new URLSearchParams({ verseKey });
         if (cached?.arabicText) params.set("arabicText", cached.arabicText);
         if (cached?.translation) params.set("translation", cached.translation);
         if (cached?.surahName) params.set("surahName", cached.surahName);
 
         const res = await fetch(`/api/ayah?${params.toString()}`, { cache: "no-store" });
         const payload = await res.json();
-        if (!res.ok) {
-          if (cached && alive) return;
-          throw new Error(
-            payload?.message ||
-              (payload?.code === "NETWORK"
-                ? "Check your connection and try again."
-                : "Failed to load verse."),
-          );
+        if (!res.ok && !cached) {
+          throw new Error(payload?.message || "Failed to load verse.");
         }
-        if (alive && payload.ayah) {
+        if (alive && payload?.ayah) {
           setAyah((prev) => ({
             ...(prev || {}),
             ...payload.ayah,
             arabicText: payload.ayah.arabicText || prev?.arabicText || "",
             translation: payload.ayah.translation || prev?.translation || "",
+            tafseer: prev?.tafseer ?? payload.ayah.tafseer ?? null,
           }));
         }
       } catch (e) {
@@ -111,11 +106,49 @@ export default function ReflectAyahPage() {
       }
     }
 
-    loadFullVerse();
+    loadVerseText();
     return () => {
       alive = false;
     };
-  }, [router, verseKey, tafseerSource]);
+  }, [router, verseKey]);
+
+  useEffect(() => {
+    if (!verseKey || !tafseerSource) return;
+    const hasText = ayah?.arabicText || ayah?.translation;
+    if (!hasText && loading) return;
+
+    let alive = true;
+    async function loadTafseer() {
+      setTafseerLoading(true);
+      try {
+        const params = new URLSearchParams({
+          verseKey,
+          tafseer: tafseerSource,
+        });
+        if (ayah?.arabicText) params.set("arabicText", ayah.arabicText);
+        if (ayah?.translation) params.set("translation", ayah.translation);
+        if (ayah?.surahName) params.set("surahName", ayah.surahName);
+
+        const res = await fetch(`/api/ayah?${params.toString()}`, { cache: "no-store" });
+        const payload = await res.json();
+        if (alive && payload?.ayah) {
+          setAyah((prev) => ({
+            ...(prev || {}),
+            tafseer: payload.ayah.tafseer ?? prev?.tafseer ?? null,
+          }));
+        }
+      } catch {
+        /* tafseer optional */
+      } finally {
+        if (alive) setTafseerLoading(false);
+      }
+    }
+
+    loadTafseer();
+    return () => {
+      alive = false;
+    };
+  }, [verseKey, tafseerSource, ayah?.arabicText, ayah?.translation, ayah?.surahName, loading]);
 
   useEffect(() => {
     if (!ayah || didPrefillTags.current) return;
@@ -160,11 +193,13 @@ export default function ReflectAyahPage() {
 
   const handleSave = async () => {
     if (!ayah || !reflectionText.trim()) return;
+    if (createInFlight.current) return;
+    createInFlight.current = true;
 
     setSaving(true);
     try {
       const reflection = {
-        id: crypto.randomUUID(),
+        tempId: crypto.randomUUID(),
         searchQuery: emotionQuery || "",
         emotion: emotionQuery || "Selected ayah",
         userInput: emotionQuery || verseKey,
@@ -178,11 +213,12 @@ export default function ReflectAyahPage() {
       };
       saveReflection(reflection);
       toast.success("Reflection saved.");
-      router.push("/reflections");
+      startTransition(() => router.push("/reflections"));
     } catch {
       toast.error("Could not save your reflection.");
     } finally {
       setSaving(false);
+      createInFlight.current = false;
     }
   };
 
@@ -202,6 +238,7 @@ export default function ReflectAyahPage() {
           >
             ← Back
           </Link>
+          <TafseerVisibilityToggle compact />
         </div>
 
         <section className="mt-6 space-y-6" aria-live="polite" aria-busy={loading && !ayah}>
@@ -217,23 +254,24 @@ export default function ReflectAyahPage() {
               <p className="text-xs font-semibold tracking-wide uppercase text-[var(--peach)]">
                 {formatVerseCitation(ayah)}
               </p>
-              {/* Ayah */}
               {ayah.arabicText ? (
                 <p
                   dir="rtl"
                   lang="ar"
-                  className="mt-6 text-center md:text-3xl text-2xl leading-[1.9] text-[#0f4f5f]"
+                  className="mt-6 text-center text-xl leading-[1.9] text-[#0f4f5f]"
                 >
                   {ayah.arabicText}
                 </p>
               ) : null}
-              {/* Translation */}
               {ayah.translation ? (
-                <p className="mt-4 text-center leading-relaxed text-slate-600 border bg-slate-100 border-slate-200 rounded-xl p-4">
+                <p className="mt-5 text-center text-sm leading-relaxed text-slate-600">
                   {ayah.translation}
                 </p>
               ) : null}
-              <AyahTafseerBlock tafseer={ayah.tafseer} className="mt-8" />
+              <AyahTafseerBlock
+                tafseer={tafseerLoading && !ayah.tafseer ? "" : ayah.tafseer}
+                className="mt-8"
+              />
             </article>
           ) : null}
         </section>

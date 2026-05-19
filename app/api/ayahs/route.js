@@ -34,7 +34,12 @@ export async function GET(request) {
     const message = error?.message || "Search request failed.";
     const code = error instanceof QuranSearchError ? error.code : SearchErrorCode.SDK;
 
-    if (code === SearchErrorCode.SDK || code === SearchErrorCode.NETWORK) {
+    const transient =
+      code === SearchErrorCode.SDK ||
+      code === SearchErrorCode.NETWORK ||
+      /fetch failed|timed out|timeout/i.test(message);
+
+    if (transient) {
       console.info(JSON.stringify({ event: "search.graceful_empty", query, code }));
       return NextResponse.json({
         ayahs: [],

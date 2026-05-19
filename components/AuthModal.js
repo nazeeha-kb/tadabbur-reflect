@@ -107,7 +107,7 @@ export default function AuthModal() {
           <span className="text-xs text-slate-400">OR</span>
           <div className="h-px flex-1 bg-slate-200" />
         </div>
-
+{/* 
         <button
           type="button"
           onClick={handleGoogle}
@@ -116,7 +116,7 @@ export default function AuthModal() {
         >
           <GoogleIcon />
           Continue with Google
-        </button>
+        </button> */}
 
         <button
           type="button"
