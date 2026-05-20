@@ -36,7 +36,21 @@ export default function TagInput({ id, tags, onChange, placeholder = "Add a tag,
 
   return (
     <div className="space-y-2">
-      {tags.length > 0 ? (
+     
+      <input
+        id={id}
+        type="text"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={onKeyDown}
+        onBlur={() => {
+          if (draft.trim()) commit(draft);
+        }}
+        className="border-[var-border] border-[0.4px] w-full rounded-xl bg-white px-4 py-3 text-sm"
+        placeholder={placeholder}
+        autoComplete="off"
+      />
+       {tags.length > 0 ? (
         <ul className="flex flex-wrap gap-2" aria-label="Selected tags">
           {tags.map((tag) => (
             <li
@@ -56,19 +70,6 @@ export default function TagInput({ id, tags, onChange, placeholder = "Add a tag,
           ))}
         </ul>
       ) : null}
-      <input
-        id={id}
-        type="text"
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        onKeyDown={onKeyDown}
-        onBlur={() => {
-          if (draft.trim()) commit(draft);
-        }}
-        className="border-[var-border] border-[0.4px] w-full rounded-xl bg-white px-4 py-3 text-sm"
-        placeholder={placeholder}
-        autoComplete="off"
-      />
     </div>
   );
 }

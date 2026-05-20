@@ -1,4 +1,4 @@
-import { Cormorant_Garamond, Inter, Patrick_Hand, Instrument_Serif } from "next/font/google";
+import { Cormorant_Garamond, Inter, Patrick_Hand, Instrument_Serif, Caveat } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "sonner";
 import { UISettingsProvider } from "@/components/UISettingsProvider";
@@ -32,6 +32,12 @@ const writingFont = Patrick_Hand({
   weight: "400",
 });
 
+const caveatFont = Caveat({
+  variable: "--font-caveat",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata = {
   title: "Quran Reflect",
   description: "A calm space to reflect on Quranic guidance.",
@@ -45,7 +51,7 @@ export default function RootLayout({ children }) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${headingFont.variable} ${bodyFont.variable} ${writingFont.variable} ${numberFont.variable} h-full antialiased`}
+      className={`${headingFont.variable} ${bodyFont.variable} ${writingFont.variable} ${numberFont.variable} ${caveatFont.variable} h-full antialiased`}
     >
       <body suppressHydrationWarning className="flex min-h-full flex-col overflow-x-hidden bg-stone-50 text-slate-900">
         <UISettingsProvider>

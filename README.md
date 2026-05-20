@@ -6,23 +6,22 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [Live Link](https://tadabbur-reflect.vercel.app/)
 
-A modern, intimate web application that helps Muslims deepen their connection with the Quran through quiet reflection, emotional resonance, and meaningful moments.
+A modern, interactive web application that empowers Muslims to deepen their connection with the Quran through guided reflection, personalized insights, and progress tracking.
 
 ## 🌟 Problem Statement
 
-Many Muslims long for the Qur’an to speak to their hearts, but most Quran tools feel like study trackers or content feeds. They need a gentle space to reflect with emotion and life moments, not another checklist.
+In today's fast-paced world, many Muslims struggle to maintain consistent Quran study and reflection. Traditional methods lack personalization, progress tracking, and interactive features that make spiritual growth engaging and sustainable.
 ## Screenshot
 ![screenshot](screenshot.png)
 
 
 ## 🚀 Solution
 
-Tadabbur offers a calm place to meet the Qur’an through what you are feeling:
-- **Verse Discovery**: Find ayahs that resonate with your current heart
-- **Reflection Memory Space**: Capture the meaning of a verse in your life
-- **Personal Resonance**: Suggestions based on mood, themes, and moments
-- **Inner Landscape Insights**: Gentle reminders of what you have reflected on
-- **Tafseer Support**: Optional scholarly context without overwhelming the experience
+Tadabbur provides a seamless platform for Quran reflection with:
+- **Guided Verse Selection**: Intuitive interface for browsing and selecting verses
+- **Rich Reflection Editor**: Live markdown preview for thoughtful journaling
+- **Progress Tracking**: Visual dashboards to monitor spiritual growth
+- **Tafseer Integration**: Multiple scholarly sources for deeper understanding
 
 ## ✨ Key Features
 
@@ -41,25 +40,24 @@ Tadabbur offers a calm place to meet the Qur’an through what you are feeling:
 - Smart suggestions based on reflection history
 - Thematic exploration through reflection tags
 
-### 🧘 Quiet Reflection Journal
-- Save every reflection as a personal moment
-- Revisit ayahs that helped you feel calm, hopeful, or held
-- Soft insights about what themes are surfacing over time
-- **Quran Foundation User API Integration**: gentle synchronization for saved reflections
+### 📊 Progress Analytics
+- Visual progress tracking across surahs and verses
+- Achievement system for milestones
+- Statistics dashboard for reflection patterns
+- **Quran Foundation User API Integration**: Streak tracking with future sync capabilities (demo placeholder)
 
 ### 🔐 Secure Authentication
 - OAuth integration with Quran Foundation API (partially implemented)
 - Secure user sessions and data privacy
-- Cross-device synchronization (planned)
+- Cross-device synchronization
 
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js 15, React 19, Tailwind CSS 4
-- **Backend**: Next.js API Routes
+- **Backend**: Next.js API Routes, Firebase
 - **Database**: Local storage with future MongoDB integration
 - **Authentication**: Quran Foundation OAuth (scaffolding in place)
-- **AI/NLP**: OpenRouter API for emotion-based verse recommendations, Compromise.js for local NLP processing
-- **Quran APIs**: Quran Foundation Content API (for search/verses), User API (streak tracking - demo integration)
+- **Quran APIs**: Quran Foundation Content API (for search/verses), User API (streak tracking integration)
 - **UI Components**: Custom components with Phosphor Icons
 - **Markdown**: React Markdown with remark-breaks
 
@@ -106,18 +104,15 @@ Tadabbur offers a calm place to meet the Qur’an through what you are feeling:
 ## 📖 Usage
 
 ### Getting Started
-1. **Sign In**: Open your quiet space and begin without pressure
-2. **Share Your Heart**: Describe what you are feeling or what you need
-3. **Connect with an Ayah**: Find a verse that speaks softly to you
-4. **Write Reflection**: Journal what this verse means in your life
-5. **Return to Your Moment**: Revisit reflections that brought calm and clarity
+1. **Sign In**: Authenticate with your Quran Foundation account (future implementation)
+2. **Browse Verses**: Explore the Quran using the interactive browser
+3. **Select a Verse**: Choose a verse that resonates with you
+4. **Write Reflection**: Use the rich editor to journal your thoughts
+5. **Track Progress**: View your spiritual journey on the progress dashboard, with Quran Foundation User API integration for streaks
 
 ### Advanced Features
-- **Emotion Search**: "Find verses about patience" or "verses for hope"
-- **Tafseer Notes**: Optional scholarly context when you choose it
-- **Tag Organization**: Group reflections by feelings and life moments
-- **Audio Recitation**: Listen while reflecting for deeper calm
-- **User API Integration**: gentle saving and syncing for your reflections
+- **Audio Recitation**: Listen while reflecting for deeper immersion
+- **User API Integration**: Streak tracking via Quran Foundation User API (future full sync)
 
 ## 🏗️ Project Structure
 

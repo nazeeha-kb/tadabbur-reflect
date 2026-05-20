@@ -460,23 +460,23 @@ export default function ReflectionsPage() {
                     className="min-w-0 flex-1 rounded-lg focus-visible:focus-ring"
                   >
                     <p className="text-xs leading-snug text-[var(--peach)] hover:underline">
-                      Back to results on:{" "}
+                      ← Search results on:{" "}
                       <span className="font-medium text-slate-700 hover:text-[var(--teal)]">
                         &ldquo;{item.emotion || "—"}&rdquo;
                       </span>
                     </p>
                   </ReflectionSearchLink>
                   <div className="flex shrink-0 items-center gap-2">
-                      <p className="text-xs font-medium text-slate-500">{formatDate(item.createdAt)}</p>
-                      <button
-                        type="button"
-                        onClick={() => setPendingDeleteId(item.id)}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-md text-rose-600 transition hover:bg-rose-50 hover:text-rose-700 focus-visible:focus-ring"
-                        aria-label={`Delete reflection ${item.title || "untitled reflection"}`}
-                        title="Delete reflection"
-                      >
-                        <Trash2Icon className="size-4" />
-                      </button>
+                    <p className="text-xs font-medium text-slate-500">{formatDate(item.createdAt)}</p>
+                    <button
+                      type="button"
+                      onClick={() => setPendingDeleteId(item.id)}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-md text-rose-600 transition hover:bg-rose-50 hover:text-rose-700 focus-visible:focus-ring"
+                      aria-label={`Delete reflection ${item.title || "untitled reflection"}`}
+                      title="Delete reflection"
+                    >
+                      <Trash2Icon className="size-4" />
+                    </button>
                   </div>
                 </div>
                 {(item.ayahs || []).length > 0 ? (
@@ -499,14 +499,9 @@ export default function ReflectionsPage() {
                 ) : null}
                 <div className="mt-4 flex flex-1 flex-col gap-2">
                   {item.title ? (
-                    <ReflectionSearchLink
-                      reflection={item}
-                      className="block w-full rounded-lg focus-visible:focus-ring"
-                    >
-                      <h2 className="text-2xl text-[var(--teal)] group-hover:underline">
-                        {item.title || "Untitled Reflection"}
-                      </h2>
-                    </ReflectionSearchLink>
+                    <h2 className="text-2xl text-[var(--teal)] group-hover">
+                      {item.title || "Untitled Reflection"}
+                    </h2>
                   ) : null}
                   <Link
                     href={`/reflections/${getServerReflectionId(item) || item.id}`}

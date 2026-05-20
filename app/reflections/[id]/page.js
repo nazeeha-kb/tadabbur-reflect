@@ -82,7 +82,11 @@ export default function ReflectionDetailPage() {
             );
             const payload = await res.json();
             if (!res.ok || !payload?.ayah) return item;
-            return { ...item, tafseer: payload.ayah.tafseer || item.tafseer || "" };
+            return {
+              ...item,
+              tafseer:
+                payload.ayah.tafseer || payload.ayah.tafsir || item.tafseer || item.tafsir || "",
+            };
           } catch {
             return item;
           }
@@ -207,12 +211,12 @@ export default function ReflectionDetailPage() {
       })}
     </p>
   ) : null}
-
+{/* 
   {reflectionRecord?.syncStatus ? (
     <div className="mt-2">
       <SyncStatusBadge status={reflectionRecord.syncStatus} />
     </div>
-  ) : null}
+  ) : null} */}
 </div>
           </div>
           <div className="mt-6 space-y-8">

@@ -90,7 +90,8 @@ export default function ReflectAyahPage() {
             ...payload.ayah,
             arabicText: payload.ayah.arabicText || prev?.arabicText || "",
             translation: payload.ayah.translation || prev?.translation || "",
-            tafseer: prev?.tafseer ?? payload.ayah.tafseer ?? null,
+            tafseer:
+              prev?.tafseer ?? prev?.tafsir ?? payload.ayah.tafseer ?? payload.ayah.tafsir ?? null,
           }));
         }
       } catch (e) {
@@ -133,7 +134,8 @@ export default function ReflectAyahPage() {
         if (alive && payload?.ayah) {
           setAyah((prev) => ({
             ...(prev || {}),
-            tafseer: payload.ayah.tafseer ?? prev?.tafseer ?? null,
+            tafseer:
+              payload.ayah.tafseer ?? payload.ayah.tafsir ?? prev?.tafseer ?? prev?.tafsir ?? null,
           }));
         }
       } catch {

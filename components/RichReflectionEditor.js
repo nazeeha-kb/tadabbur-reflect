@@ -113,7 +113,7 @@ export default function RichReflectionEditor({ id, value, onChange, placeholder,
             onChange={(event) => onChange(event.target.value)}
             onKeyDown={onKeyDown}
             rows={rows}
-            className="reflection-page bg-[repeating-linear-gradient(to_bottom,transparent,transparent_27px,hsl(40,50%,85%)_28px)]"
+            className="font-caveat text-2xl reflection-page bg-[repeating-linear-gradient(to_bottom,transparent,transparent_27px,hsl(40,50%,85%)_28px)]"
             placeholder={placeholder}
           />
         </>

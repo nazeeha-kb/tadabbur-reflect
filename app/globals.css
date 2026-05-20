@@ -48,7 +48,7 @@
 }
 
 @layer base {
-  button{
+  button {
     cursor: pointer;
   }
 }
@@ -70,6 +70,10 @@
 
   .underline-indicators>*[aria-selected="true"]::after {
     @apply scale-100
+  }
+
+  .font-caveat {
+    font-family: var(--font-caveat);
   }
 }
 
@@ -94,7 +98,8 @@
 }
 
 .reflection-page {
-  @apply w-full h-80 mt-6 leading-[28px] text-[16px];
+  /* text-[18px] */
+  @apply w-full h-80 mt-6 leading-[28px] text-[24px];
 }
 
 .reflection-writing {
