@@ -31,6 +31,7 @@ export async function GET(request) {
     return NextResponse.json(streak);
   } catch (error) {
     console.error(JSON.stringify({ event: "streak.fetch.error", message: String(error?.message || error) }));
+    console.log(await res.text());
     return NextResponse.json({ currentStreak: 0, longestStreak: 0, source: "error" });
   }
 }

@@ -392,13 +392,13 @@ export function AuthProvider({ children }) {
 
     if (user.kind === "guest") return;
 
-    const response = await fetch("/api/streak", { method: "POST" });
+    const response = await fetch("/api/streaks", { method: "POST" });
 
     if (response.ok) {
 
       const data = await response.json();
 
-      setStreak(data.streak);
+      setStreak(data);
 
     }
 
@@ -446,7 +446,7 @@ export function AuthProvider({ children }) {
 
     authClientLog("logout.start");
 
-    const wasRegistered = user?.kind !== "guest";
+    const wasRegistered = user && user.kind !== "guest";
 
     clearGuestStorage();
     invalidateSessionCache();

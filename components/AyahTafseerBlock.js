@@ -19,7 +19,7 @@ export default function AyahTafseerBlock({ tafseer, className = "" }) {
        
       </div>
       {showTafseer && text ? (
-        <div className="mt-6 rounded-xl border border-green-300 bg-green-50/80 px-4 py-3">
+        <div className="mt-6 rounded-xl border border-green-300 bg-green-50/70 px-4 py-3">
           <p className="text-xs font-semibold uppercase tracking-wide text-green-700">Tafsir</p>
           <p className="mt-2 text-xs text-green-700">
             Source: {getTafseerSourceMeta(tafseerSource).label}

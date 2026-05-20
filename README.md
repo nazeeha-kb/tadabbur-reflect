@@ -4,9 +4,11 @@
 [![React](https://img.shields.io/badge/React-19.0.0-blue)](https://reactjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[Live Link](https://tadabbur-reflect.vercel.app/)
 
 A modern, interactive web application that empowers Muslims to deepen their connection with the Quran through guided reflection, personalized insights, and progress tracking.
+
+You can try the app here: [Live Link](https://tadabbur-reflect.vercel.app/)
+
 
 ## 🌟 Problem Statement
 
@@ -22,6 +24,7 @@ Tadabbur provides a seamless platform for Quran reflection with:
 - **Rich Reflection Editor**: Live markdown preview for thoughtful journaling
 - **Progress Tracking**: Visual dashboards to monitor spiritual growth
 - **Tafseer Integration**: Multiple scholarly sources for deeper understanding
+- **Sync with Quran Foundation**: Streaks and Reflections synced with Quran Foundation
 
 ## ✨ Key Features
 
@@ -29,22 +32,16 @@ Tadabbur provides a seamless platform for Quran reflection with:
 - Browse surahs and verses with clean, responsive design
 - Audio recitation integration for immersive experience
 - Multiple tafseer sources for comprehensive understanding
+- Sync reflections with **Quran Foundation**
 
 ### ✍️ Rich Reflection Editor
 - Live markdown preview while writing
 - Tag system for organizing reflections by themes
 - Timestamped entries for tracking spiritual journey
 
-### 🎯 Personalized Recommendations
-- Emotion-based verse search using natural language processing
-- Smart suggestions based on reflection history
-- Thematic exploration through reflection tags
-
 ### 📊 Progress Analytics
-- Visual progress tracking across surahs and verses
-- Achievement system for milestones
 - Statistics dashboard for reflection patterns
-- **Quran Foundation User API Integration**: Streak tracking with future sync capabilities (demo placeholder)
+- **Quran Foundation User API Integration**: Streak tracking with sync capabilities
 
 ### 🔐 Secure Authentication
 - OAuth integration with Quran Foundation API (partially implemented)
