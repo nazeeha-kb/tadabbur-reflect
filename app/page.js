@@ -19,7 +19,6 @@ import {
 } from "@phosphor-icons/react";
 import SiteHeader from "@/components/SiteHeader";
 import { SearchIcon } from "@/components/icons";
-import TafseerSourceSelect from "@/components/TafseerSourceSelect";
 import { useUISettings } from "@/components/UISettingsProvider";
 import { useAuth } from "@/components/AuthProvider";
 import { searchDebug } from "@/lib/search/searchDebug";
@@ -160,10 +159,11 @@ export default function Home() {
               Tadabbur Companion
             </p>
             <h1 className="mt-6 text-5xl leading-none text-(--teal) sm:text-7xl">
-              Find solace in <span className="italic text-(--peach)">His words.</span>
+              Find comfort in
+              <span className="italic text-(--peach)"> his words.</span>
             </h1>
             <p className="mt-6 max-w-xl text-base text-slate-600 sm:text-lg">
-              A gentle space to reflect on the Qur’an through your emotions and moments.
+              A calm place to reflect on the Qur’an through feelings, life moments, and soft presence.
             </p>
 
             <form
@@ -187,11 +187,10 @@ export default function Home() {
                   required
                 />
               </div>
-              <div className="flex sm:w-auto w-full gap-3 items-center">
-                <TafseerSourceSelect compact className="w-auto sm:grow-0 grow" />
+              <div className="flex sm:w-auto w-full items-center">
                 <button
                   type="submit"
-                  className="h-11 shrink-0 rounded-full bg-(--peach) px-6 text-sm font-semibold text-white transition hover:brightness-105 "
+                  className="h-11 w-full rounded-full bg-(--peach) px-6 text-sm font-semibold text-white transition hover:brightness-105 sm:w-auto"
                 >
                   Reflect
                 </button>
@@ -203,10 +202,10 @@ export default function Home() {
         <section className="w-full text-start mt-10" aria-labelledby="explore-heading">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <h2 id="explore-heading" className="font-serif text-3xl text-(--teal) sm:text-4xl">
-              Explore by Emotion
+              Begin from the feeling in your heart
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
-              Choose a state of heart to discover verses tailored for your current journey.
+              Choose a state of heart to discover verses that speak softly to your current journey.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
               {EXPLORE_BY_EMOTION.map((item) => {
