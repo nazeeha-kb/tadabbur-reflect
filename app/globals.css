@@ -71,10 +71,10 @@
   .underline-indicators>*[aria-selected="true"]::after {
     @apply scale-100
   }
-
+/* 
   .font-caveat {
     font-family: var(--font-caveat);
-  }
+  } */
 }
 
 @layer components {
@@ -99,7 +99,8 @@
 
 .reflection-page {
   /* text-[18px] */
-  @apply w-full h-80 mt-6 leading-[28px] text-[24px];
+  /* text-[24px] */
+  @apply w-full h-80 mt-6 leading-[28px] text-[16px];
 }
 
 .reflection-writing {

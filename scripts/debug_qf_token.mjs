@@ -5,8 +5,8 @@ import { getQfOAuthConfig } from '../lib/api/qfOAuthConfig.js';
   try {
     const cfg = getQfOAuthConfig();
     console.log('QF_ENV=', process.env.QF_ENV || '<<not-set>>');
-    console.log('authBaseUrl=', cfg.authBaseUrl);
-    const tokenUrl = `${cfg.authBaseUrl.replace(/\/$/, '')}/oauth2/token`;
+    console.log('baseUrl=', cfg.baseUrl);
+    const tokenUrl = `${cfg.baseUrl.replace(/\/$/, '')}/oauth2/token`;
     console.log('tokenUrl=', tokenUrl);
 
     const scope = 'content search';

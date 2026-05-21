@@ -14,12 +14,12 @@
 import { createServerClient } from "@quranjs/api/server";
 
 const PRELIVE = {
-  authBaseUrl: "https://prelive-oauth2.quran.foundation",
+  baseUrl: "https://prelive-oauth2.quran.foundation",
   apiBaseUrl: "https://apis-prelive.quran.foundation",
 };
 
 const PRODUCTION = {
-  authBaseUrl: "https://oauth2.quran.foundation",
+  baseUrl: "https://oauth2.quran.foundation",
   apiBaseUrl: "https://apis.quran.foundation",
 };
 
@@ -51,8 +51,8 @@ const client = createServerClient({
   clientId: QF_CLIENT_ID,
   clientSecret: QF_CLIENT_SECRET,
   services: {
-    oauth2BaseUrl: envConfig.authBaseUrl.replace(/\/$/, ""),
-    tokenHost: envConfig.authBaseUrl.replace(/\/$/, ""),
+    oauth2BaseUrl: envConfig.baseUrl.replace(/\/$/, ""),
+    tokenHost: envConfig.baseUrl.replace(/\/$/, ""),
     gatewayUrl: envConfig.apiBaseUrl.replace(/\/$/, ""),
   },
 });
@@ -85,7 +85,7 @@ async function auditTafsirs() {
   console.log("\n📚 QURAN FOUNDATION TAFSIR AUDIT\n");
   console.log("Environment:", QF_ENV === "production" ? "🌐 PRODUCTION" : "🧪 PRELIVE (Development)");
   console.log("API Base URL:", envConfig.apiBaseUrl);
-  console.log("Auth Base URL:", envConfig.authBaseUrl);
+  console.log("Auth Base URL:", envConfig.baseUrl);
   console.log("=".repeat(80));
 
   try {
